@@ -17,14 +17,14 @@ export const categoriesData = [
   { title: "Mobiles", href: "mobiles" },
   { title: "Appliances", href: "appliances" },
   { title: "Smartphones", href: "smartphones" },
-  { title: "Air Conditioners", href: "air-conditioners" },
-  { title: "Washing Machine", href: "washing-machine" },
-  { title: "Kitchen Appliances", href: "kitchen-appliances" },
+ 
+  
   { title: "gadget accessories", href: "gadget-accessories" },
 ];
 export const productType = [
   { title: "Gadget", value: "gadget" },
   { title: "Appliances", value: "appliances" },
-  { title: "Refrigerators", value: "refrigerators" },
+  { title: "mobile", value: "mobiles" },
+  { title: "headphone", value: "headphone" },
   { title: "Others", value: "others" },
 ];

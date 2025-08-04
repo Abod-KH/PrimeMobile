@@ -24,21 +24,13 @@ const socialLink = [
     href: "https://www.youtube.com/",
     icon: <Github className="w-5 h-5" />,
   },
-  {
-    title: "Linkedin",
-    href: "https://www.youtube.com/",
-    icon: <Linkedin className="w-5 h-5" />,
-  },
+  
   {
     title: "Facebook",
     href: "https://www.youtube.com/",
     icon: <Facebook className="w-5 h-5" />,
   },
-  {
-    title: "Slack",
-    href: "https://www.youtube.com/",
-    icon: <Slack className="w-5 h-5" />,
-  },
+ 
 ];
 
 const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
