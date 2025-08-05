@@ -1,5 +1,6 @@
 "use client";
-// import { Product } from "@/sanity.types";
+import { Product } from "@/sanity.types";
+
 // import useStore from "@/store";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +12,7 @@ const FavoriteButton = ({
   // product,
 }: {
   showProduct?: boolean;
-  // product?: Product | null | undefined;
+  product?: Product | null | undefined;
 }) => {
   // const { favoriteProduct, addToFavorite } = useStore();
   // const [existingProduct, setExistingProduct] = useState<Product | null>(null);
