@@ -3,10 +3,11 @@ import { Product } from "@/sanity.types";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
-// import useStore from "@/store";
-// import toast from "react-hot-toast";
+import useStore from "@/store";
+import toast from "react-hot-toast";
 import PriceFormatter from "./PriceFormatter";
-// import QuantityButtons from "./QuantityButtons";
+import QuantityButtons from "./QuantityButtons";
+
 
 interface Props {
   product: Product;
@@ -14,23 +15,23 @@ interface Props {
 }
 
 const AddToCartButton = ({ product, className }: Props) => {
-  // const { addItem, getItemCount } = useStore();
-  // const itemCount = getItemCount(product?._id);
+  const { addItem, getItemCount } = useStore();
+  const itemCount = getItemCount(product?._id);
   const isOutOfStock = product?.stock === 0;
 
-  // const handleAddToCart = () => {
-  //   if ((product?.stock as number) > itemCount) {
-  //     addItem(product);
-  //     toast.success(
-  //       `${product?.name?.substring(0, 12)}... added successfully!`
-  //     );
-  //   } else {
-  //     toast.error("Can not add more than available stock");
-  //   }
-  // };
+  const handleAddToCart = () => {
+    if ((product?.stock as number) > itemCount) {
+      addItem(product);
+      toast.success(
+        `${product?.name?.substring(0, 12)}... added successfully!`
+      );
+    } else {
+      toast.error("Can not add more than available stock");
+    }
+  };
   return (
     <div className="w-full h-12 flex items-center">
-      { /*{itemCount ? (
+      {itemCount ? (
         <div className="text-sm w-full">
           <div className="flex items-center justify-between">
             <span className="text-xs text-darkColor/80">Quantity</span>
@@ -54,7 +55,7 @@ const AddToCartButton = ({ product, className }: Props) => {
         >
           <ShoppingBag /> {isOutOfStock ? "Out of Stock" : "Add to Cart"}
         </Button>
-      )} */}
+      )} 
     </div>
   );
 };

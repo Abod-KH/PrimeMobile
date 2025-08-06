@@ -1,11 +1,11 @@
 import "./globals.css";
-// import { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className="font-poppins antialiased">
         {children}
-        {/* <Toaster
+        <Toaster
           position="bottom-right"
           toastOptions={{
             style: {
@@ -13,7 +13,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
               color: "#fff",
             },
           }}
-        /> */}
+        />
       </body>
     </html>
   );
