@@ -1,6 +1,5 @@
 import React from "react";
 import Container from "./Container";
-import FooterTop from "./FooterTop";
 import Logo from "./Logo";
 import SocialMedia from "./SocialMedia";
 import { SubText, SubTitle } from "./ui/text";
@@ -8,33 +7,33 @@ import { categoriesData, quickLinksData } from "@/constants/data";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t">
+    <footer className="bg-[#15181F] text-white">
       <Container>
-        <FooterTop />
-        <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <Logo />
-            <SubText>
-              Discover curated furniture collections at PrimeMobile, blending
-              style and comfort to elevate your living spaces.
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="space-y-6">
+            <Logo className="text-white" />
+            <SubText className="text-gray-400">
+              Discover curated mobile collections at PrimeMobile, blending
+              innovation and quality to elevate your tech experience.
             </SubText>
             <SocialMedia
-              className="text-darkColor/60"
-              iconClassName="border-darkColor/60 hover:border-shop_light_green hover:text-shop_light_green"
-              tooltipClassName="bg-darkColor text-white"
+              className="text-white/60"
+              iconClassName="border-white/60 hover:border-green-500 hover:text-green-500"
+              tooltipClassName="bg-white text-darkColor"
             />
           </div>
           <div>
-            <SubTitle>Quick Links</SubTitle>
-            <ul className="space-y-3 mt-4">
+            <SubTitle className="text-green-500 mb-6">Quick Links</SubTitle>
+            <ul className="space-y-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
                   <Link
                     href={item?.href}
-                    className="hover:text-shop_light_green hoverEffect font-medium"
+                    className="text-gray-400 hover:text-green-500 hoverEffect font-medium"
                   >
                     {item?.title}
                   </Link>
@@ -43,13 +42,13 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle>Categories</SubTitle>
-            <ul className="space-y-3 mt-4">
+            <SubTitle className="text-green-500 mb-6">Categories</SubTitle>
+            <ul className="space-y-4">
               {categoriesData?.map((item) => (
                 <li key={item?.title}>
                   <Link
                     href={`/category/${item?.href}`}
-                    className="hover:text-shop_light_green hoverEffect font-medium"
+                    className="text-gray-400 hover:text-green-500 hoverEffect font-medium"
                   >
                     {item?.title}
                   </Link>
@@ -57,21 +56,63 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div className="space-y-4">
-            <SubTitle>Newsletter</SubTitle>
-            <SubText>
-              Subscribe to our newsletter to receive updates and exclusive
-              offers
-            </SubText>
-            <form className="space-y-3">
-              <Input placeholder="Enter your email" type="email" required />
-              <Button className="w-full">Subscribe</Button>
-            </form>
+          <div className="space-y-6">
+            <SubTitle className="text-green-500">Get In Touch</SubTitle>
+            <ul className="space-y-4">
+              <li className="text-gray-400 flex items-center gap-3 group">
+                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <MapPin className="h-4 w-4 text-green-500" />
+                </span>
+                <div>
+                  
+                  <span className="text-sm">Amman, Jordan</span>
+                </div>
+              </li>
+              <li className="text-gray-400 flex items-center gap-3 group">
+                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Phone className="h-4 w-4 text-green-500" />
+                </span>
+                <div>
+                  
+                  <span className="text-sm">+962-79999999</span>
+                </div>
+              </li>
+              <li className="text-gray-400 flex items-center gap-3 group">
+                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Mail className="h-4 w-4 text-green-500" />
+                </span>
+                <div>
+                 
+                  <span className="text-sm">info@primemobile.com</span>
+                </div>
+              </li>
+              <li className="text-gray-400 flex items-center gap-3 group">
+                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Clock className="h-4 w-4 text-green-500" />
+                </span>
+                <div>
+                  
+                  <span className="text-sm">Mon - Sat: 10:00 AM - 7:00 PM</span>
+                </div>
+              </li>
+            </ul>
+            {/* <div className="space-y-4">
+              <SubTitle className="text-green-500">Newsletter</SubTitle>
+              <Input 
+                placeholder="Your email" 
+                type="email" 
+                required 
+                className="bg-transparent border-gray-700 text-white placeholder:text-gray-500"
+              />
+              <Button className="w-full bg-green-500 hover:bg-green-600">
+                Subscribe
+              </Button>
+            </div> */}
           </div>
         </div>
-        <div className="py-6 border-t text-center text-sm text-gray-600">
+        <div className="py-6 border-t border-gray-800 text-center text-sm text-gray-400">
           <div>
-            © {new Date().getFullYear()} <Logo className="text-sm" />. All
+            © {new Date().getFullYear()} <Logo className="text-sm text-white" />. All
             rights reserved.
           </div>
         </div>
