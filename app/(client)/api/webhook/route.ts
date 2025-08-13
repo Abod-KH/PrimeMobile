@@ -5,6 +5,7 @@ import { backendClient } from "@/sanity/lib/backendClient";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { sendEmail } from "@/lib/sendEmail";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -142,6 +143,26 @@ async function createOrderInSanity(
   // Update stock levels in Sanity
 
   await updateStockLevels(stockUpdates);
+
+  // Send order confirmation email
+  try {
+    await sendEmail({
+      to: customerEmail,
+      subject: `Order Confirmation - #${orderNumber}`,
+      html: `
+        <h1>Thank you for your order, ${customerName}!</h1>
+        <p>Your order number is: <strong>${orderNumber}</strong></p>
+        <p>Total amount: <strong>${(amount_total ? amount_total / 100 : 0).toFixed(2)} ${currency?.toUpperCase()}</strong></n>
+        <p>You can view your order details <a href="${process.env.NEXT_PUBLIC_BASE_URL}/orders/${order._id}">here</a>.</p>
+        <p>We will send a separate invoice to your email: ${customerEmail}</p>
+        <p>Thank you for shopping with us!</p>
+      `,
+    });
+    console.log(`Order confirmation email sent to ${customerEmail}`);
+  } catch (emailError) {
+    console.error("Error sending order confirmation email:", emailError);
+  }
+
   return order;
 }
 
