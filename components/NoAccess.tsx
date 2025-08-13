@@ -17,7 +17,7 @@ const NoAccess = ({
 }) => {
   return (
     <div className="flex items-center justify-center py-12 md:py-32 bg-gray-100 p-4">
-      <Card className="w-full max-w-md p-5">
+      <Card className="w-full max-w-md p-5 bg-shop_light_green">
         <CardHeader className="flex items-center flex-col">
           <Logo />
           <CardTitle className="text-2xl font-bold text-center">
@@ -33,7 +33,7 @@ const NoAccess = ({
           </SignInButton>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-muted-foreground text-center">
+          <div className="text-sm text-center text-darkColor/80">
             Don&rsquo;t have an account?
           </div>
           <SignUpButton mode="modal">
