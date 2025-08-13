@@ -45,10 +45,10 @@ const Askme = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-16 right-4 z-50">
       {!isOpen && (
         <button
-          className="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="bg-shop_dark_green text-white p-3 rounded-full shadow-lg hover:bg-[#90D1CA] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           onClick={() => setIsOpen(true)}
         >
           <Bot size={24} />
@@ -67,7 +67,7 @@ const Askme = () => {
             {messages.map((msg, index) => (
               <div key={index} className={`mb-2 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                 <span
-                  className={`inline-block p-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                  className={`inline-block p-2 rounded-lg ${msg.role === 'user' ? 'bg-shop_dark_green text-white' : 'bg-gray-200 text-gray-800'}`}
                 >
                   {msg.content}
                 </span>
@@ -82,7 +82,7 @@ const Askme = () => {
           <div className="p-3 border-t border-gray-200 flex">
             <input
               type="text"
-              className="flex-1 border border-gray-300 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 border border-gray-300 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-shop_dark_green"
               placeholder="Type your message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -93,7 +93,7 @@ const Askme = () => {
               }}
             />
             <button
-              className="bg-blue-600 text-white p-2 rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="bg-shop_dark_green text-white p-2 rounded-r-lg hover:bg-[#90D1CA] focus:outline-none focus:ring-2 focus:ring-shop_dark_green focus:ring-opacity-50"
               onClick={handleSendMessage}
             >
               <Send size={20} />

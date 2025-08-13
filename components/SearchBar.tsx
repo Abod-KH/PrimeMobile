@@ -63,7 +63,7 @@ const SearchBar = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={() => setOpen(true)}
-            className="pl-8 pr-8 w-[300px] focus-visible:ring-shop_light_green"
+            className="pl-8 pr-8 w-full md:w-[300px] focus-visible:ring-shop_dark_green bg-white"
           />
           {searchTerm && (
             <button

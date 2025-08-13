@@ -25,7 +25,7 @@ const SearchResults = ({ isOpen, products, onProductClick }: SearchResultsProps)
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-full mt-1 w-full bg-white rounded-md border shadow-lg z-50">
+    <div className="absolute top-full mt-1 w-full md:w-[300px] bg-white rounded-md border shadow-lg z-50">
       <Command>
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>

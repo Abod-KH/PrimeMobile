@@ -11,29 +11,29 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#15181F] text-white">
+    <footer className="bg-[#90D1CA] text-white">
       <Container>
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="space-y-6">
-            <Logo className="text-white" />
-            <SubText className="text-gray-400">
+            <Logo />
+            <SubText className="text-white">
               Discover curated mobile collections at PrimeMobile, blending
               innovation and quality to elevate your tech experience.
             </SubText>
             <SocialMedia
-              className="text-white/60"
-              iconClassName="border-white/60 hover:border-green-500 hover:text-green-500"
+              className="text-white"
+              iconClassName="border-white/60 hover:border-shop_dark_green hover:text-shop_dark_green"
               tooltipClassName="bg-white text-darkColor"
             />
           </div>
           <div>
-            <SubTitle className="text-green-500 mb-6">Quick Links</SubTitle>
+            <SubTitle className="text-shop_dark_green mb-6">Quick Links</SubTitle>
             <ul className="space-y-4">
               {quickLinksData?.map((item) => (
                 <li key={item?.title}>
                   <Link
                     href={item?.href}
-                    className="text-gray-400 hover:text-green-500 hoverEffect font-medium"
+                    className="text-white hover:text-shop_dark_green hoverEffect font-medium"
                   >
                     {item?.title}
                   </Link>
@@ -42,13 +42,13 @@ const Footer = () => {
             </ul>
           </div>
           <div>
-            <SubTitle className="text-green-500 mb-6">Categories</SubTitle>
+            <SubTitle className="text-shop_dark_green mb-6">Categories</SubTitle>
             <ul className="space-y-4">
               {categoriesData?.map((item) => (
                 <li key={item?.title}>
                   <Link
                     href={`/category/${item?.href}`}
-                    className="text-gray-400 hover:text-green-500 hoverEffect font-medium"
+                    className="text-white hover:text-shop_dark_green hoverEffect font-medium"
                   >
                     {item?.title}
                   </Link>
@@ -57,38 +57,38 @@ const Footer = () => {
             </ul>
           </div>
           <div className="space-y-6">
-            <SubTitle className="text-green-500">Get In Touch</SubTitle>
+            <SubTitle className="text-shop_dark_green">Get In Touch</SubTitle>
             <ul className="space-y-4">
-              <li className="text-gray-400 flex items-center gap-3 group">
-                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
-                  <MapPin className="h-4 w-4 text-green-500" />
+              <li className="text-white flex items-center gap-3 group">
+                <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <MapPin className="h-4 w-4 text-white" />
                 </span>
                 <div>
                   
                   <span className="text-sm">Amman, Jordan</span>
                 </div>
               </li>
-              <li className="text-gray-400 flex items-center gap-3 group">
-                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
-                  <Phone className="h-4 w-4 text-green-500" />
+              <li className="text-white flex items-center gap-3 group">
+                <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Phone className="h-4 w-4 text-white" />
                 </span>
                 <div>
                   
                   <span className="text-sm">+962-79999999</span>
                 </div>
               </li>
-              <li className="text-gray-400 flex items-center gap-3 group">
-                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
-                  <Mail className="h-4 w-4 text-green-500" />
+              <li className="text-white flex items-center gap-3 group">
+                <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Mail className="h-4 w-4 text-white" />
                 </span>
                 <div>
                  
                   <span className="text-sm">info@primemobile.com</span>
                 </div>
               </li>
-              <li className="text-gray-400 flex items-center gap-3 group">
-                <span className="p-1.5 bg-[#1D2029] rounded-full group-hover:bg-green-500/20 transition-colors">
-                  <Clock className="h-4 w-4 text-green-500" />
+              <li className="text-white flex items-center gap-3 group">
+                <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
+                  <Clock className="h-4 w-4 text-white" />
                 </span>
                 <div>
                   
@@ -110,7 +110,7 @@ const Footer = () => {
             </div> */}
           </div>
         </div>
-        <div className="py-6 border-t border-gray-800 text-center text-sm text-gray-400">
+        <div className="py-3 border-t border-gray-800 text-center text-sm text-white">
           <div>
             © {new Date().getFullYear()} <Logo className="text-sm text-white" />. All
             rights reserved.

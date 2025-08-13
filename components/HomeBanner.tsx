@@ -71,9 +71,9 @@ const HomeBanner = () => {
 				<CarouselContent>
 					{slides.map((slide, index) => (
 						<CarouselItem key={index}>
-							<div className="py-8 md:py-12 rounded-lg px-10 lg:px-24 flex items-center justify-between min-h-[350px] max-h-[350px] overflow-hidden bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
+							<div className="py-8 md:py-12 px-10 lg:px-24 flex items-center justify-between min-h-[400px] max-h-[400px] overflow-hidden bg-gradient-to-br bg-[#90D1CA]">
                 <div className="space-y-5 max-w-[50%]">
-                  <Title className="text-4xl md:text-5xl font-bold text-gray-900">
+                  <Title className="text-4xl md:text-5xl font-bold text-white">
                     {slide.title} <br />
                     <span className="text-3xl md:text-4xl">{slide.subtitle}</span>
                   </Title>
@@ -86,7 +86,7 @@ const HomeBanner = () => {
                   <div className="flex gap-4">
                     <Link
                       href={"/shop"}
-                      className="bg-shop_dark_green/90 text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
+                      className="bg-[#096B68] text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
                     >
                       Buy Now
                     </Link>

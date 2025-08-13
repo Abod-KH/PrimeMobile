@@ -9,12 +9,13 @@ import React from 'react'
 const Home = async () => {
   const categories = await getCategories(6);
   return (
+    <>  
+    <HomeBanner/>
     <Container className=' text-xl'>
-      <HomeBanner/>
       <ProductGrid />
       <HomeCategories categories={categories} />
       <ShopByBrands />
-    </Container>
+    </Container></>
   )
 }
 
