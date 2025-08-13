@@ -27,16 +27,21 @@ const Header =async () => {
         <MobileMenu />
         <Logo />
       </div>
+      <div className="md:hidden">
+        <SearchBar />
+      </div>
       <HeaderMenu />
       <div className="flex items-center justify-end gap-5 flex-shrink-0">
-        <SearchBar />
+        <div className="hidden md:block">
+          <SearchBar />
+        </div>
         <CartIcon />
         <FavoriteButton />
 
         {user && (
           <Link
             href={"/orders"}
-            className="group relative hover:text-shop_light_green hoverEffect"
+            className="group relative text-shop_dark_green hover:text-white hoverEffect"
           >
             <Logs />
             <span className="absolute -top-1 -right-1 bg-shop_btn_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">

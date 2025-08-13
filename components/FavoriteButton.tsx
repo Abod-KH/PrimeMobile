@@ -38,7 +38,7 @@ const FavoriteButton = ({
     <>
       {!showProduct ? (
         <Link href={"/wishlist"} className="group relative">
-          <Heart className="w-5 h-5 hover:text-shop_light_green hoverEffect" />
+          <Heart className="w-5 h-5 text-shop_dark_green hover:text-white hoverEffect" />
           <span className="absolute -top-1 -right-1 bg-shop_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
             {favoriteProduct?.length ? favoriteProduct?.length : 0}
           </span>
