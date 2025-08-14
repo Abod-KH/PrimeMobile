@@ -13,19 +13,29 @@ import { Product } from "@/sanity.types";
 
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
-  const query = `*[_type == "product" && variant == $variant] | order(name asc){
-  ...,"categories": categories[]->title
-}`;
-  const params = { variant: selectedTab.toLowerCase() };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await client.fetch(query, params);
-        setProducts(await response);
+        const productsQuery = `*[_type == "product" && variant == $variant] | order(name asc){
+          ...,"categories": categories[]->title
+        }`;
+        const params = { variant: selectedTab.toLowerCase() };
+        const products = await client.fetch(productsQuery, params);
+        setProducts(products);
+
+        // Fetch reviews for all products
+        const reviewsData: {[key: string]: any[]} = {};
+        for (const product of products) {
+          const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
+          const reviews = await client.fetch(reviewsQuery, { productId: product._id });
+          reviewsData[product._id] = reviews;
+        }
+        setProductReviews(reviewsData);
       } catch (error) {
         console.log("Product fetching Error", error);
       } finally {
@@ -56,7 +66,11 @@ const ProductGrid = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <ProductCard key={product?._id} product={product} />
+                  <ProductCard 
+                    key={product?._id} 
+                    product={product} 
+                    reviews={productReviews[product._id] || []}
+                  />
                 </motion.div>
               </AnimatePresence>
             ))}

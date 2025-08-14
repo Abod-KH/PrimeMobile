@@ -16,11 +16,13 @@ interface Props {
   categories: Category[];
   brands: BRANDS_QUERYResult;
 }
+
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
@@ -29,6 +31,7 @@ const Shop = ({ categories, brands }: Props) => {
     brandParams || null
   );
   const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -47,14 +50,22 @@ const Shop = ({ categories, brands }: Props) => {
       ] 
       | order(name asc) {
         ...,"categories": categories[]->title
-      }
-    `;
-      const data = await client.fetch(
-        query,
+      }`;
+      
+      const data = await client.fetch(query, 
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
       setProducts(data);
+
+      // Fetch reviews for all products
+      const reviewsData: {[key: string]: any[]} = {};
+      for (const product of data) {
+        const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
+        const reviews = await client.fetch(reviewsQuery, { productId: product._id });
+        reviewsData[product._id] = reviews;
+      }
+      setProductReviews(reviewsData);
     } catch (error) {
       console.log("Shop product fetching Error", error);
     } finally {
@@ -65,6 +76,7 @@ const Shop = ({ categories, brands }: Props) => {
   useEffect(() => {
     fetchProducts();
   }, [selectedCategory, selectedBrand, selectedPrice]);
+
   return (
     <div className="border-t">
       <Container className="mt-5">
@@ -118,7 +130,11 @@ const Shop = ({ categories, brands }: Props) => {
               ) : products?.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                   {products?.map((product) => (
-                    <ProductCard key={product?._id} product={product} />
+                    <ProductCard 
+                      key={product?._id} 
+                      product={product} 
+                      reviews={productReviews[product._id] || []}
+                    />
                   ))}
                 </div>
               ) : (

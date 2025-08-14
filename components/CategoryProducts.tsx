@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
+
 interface Props {
   categories: Category[];
   slug: string;
@@ -16,8 +17,10 @@ interface Props {
 const CategoryProducts = ({ categories, slug }: Props) => {
   const [currentSlug, setCurrentSlug] = useState(slug);
   const [products, setProducts] = useState([]);
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const handleCategoryChange = (newSlug: string) => {
     if (newSlug === currentSlug) return; // Prevent unnecessary updates
     setCurrentSlug(newSlug);
@@ -27,12 +30,21 @@ const CategoryProducts = ({ categories, slug }: Props) => {
   const fetchProducts = async (categorySlug: string) => {
     setLoading(true);
     try {
-      const query = `
+      const productsQuery = `
         *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
         ...,"categories": categories[]->title}
       `;
-      const data = await client.fetch(query, { categorySlug });
+      const data = await client.fetch(productsQuery, { categorySlug });
       setProducts(data);
+
+      // Fetch reviews for all products
+      const reviewsData: {[key: string]: any[]} = {};
+      for (const product of data) {
+        const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
+        const reviews = await client.fetch(reviewsQuery, { productId: product._id });
+        reviewsData[product._id] = reviews;
+      }
+      setProductReviews(reviewsData);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);
@@ -40,6 +52,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchProducts(currentSlug);
   }, [router]);
@@ -70,7 +83,10 @@ const CategoryProducts = ({ categories, slug }: Props) => {
             {products?.map((product: Product) => (
               <AnimatePresence key={product._id}>
                 <motion.div>
-                  <ProductCard product={product} />
+                  <ProductCard 
+                    product={product} 
+                    reviews={productReviews[product._id] || []}
+                  />
                 </motion.div>
               </AnimatePresence>
             ))}

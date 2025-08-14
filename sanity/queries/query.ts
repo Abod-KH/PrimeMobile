@@ -13,7 +13,13 @@ const LATEST_BLOG_QUERY = defineQuery(
 
 const DEAL_PRODUCTS = defineQuery(
   `*[_type == 'product' && status == 'hot'] | order(name asc){
-    ...,"categories": categories[]->title
+    ...,
+    categories[]->{
+      _type,
+      _id,
+      title,
+      slug
+    }
   }`
 );
 
@@ -32,6 +38,11 @@ const MY_ORDERS_QUERY =
 }
 }`);
 
+const PRODUCT_REVIEWS_QUERY = defineQuery(`*[_type == "review" && product._ref == $productId] | order(createdAt desc) {
+  ...,
+  product->
+}`);
+
 export {
   BRANDS_QUERY,
   LATEST_BLOG_QUERY,
@@ -39,5 +50,5 @@ export {
   PRODUCT_BY_SLUG_QUERY,
   BRAND_QUERY,
   MY_ORDERS_QUERY,
- 
+  PRODUCT_REVIEWS_QUERY,
 };
