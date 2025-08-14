@@ -95,7 +95,10 @@ const CartPage = () => {
         customerName: user?.fullName ?? "Unknown",
         customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
         clerkUserId: user?.id,
-        address: selectedAddress,
+        address: selectedAddress ? {
+          ...selectedAddress,
+          phoneNumber: selectedAddress.phoneNumber // Explicitly include phone number
+        } : null,
       };
       const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
       if (checkoutUrl) {

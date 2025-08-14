@@ -124,6 +124,7 @@ export const orderType = defineType({
         defineField({ name: "city", title: "City", type: "string" }),
         defineField({ name: "address", title: "Address", type: "string" }),
         defineField({ name: "name", title: "Name", type: "string" }),
+        defineField({ name: "phoneNumber", title: "Phone Number", type: "string" }),
       ],
     }),
     defineField({

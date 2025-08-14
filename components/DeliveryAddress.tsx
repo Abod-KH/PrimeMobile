@@ -76,6 +76,7 @@ const DeliveryAddress = ({ addresses, selectedAddress, setSelectedAddress, onAdd
       city: formData.get("city") as string,
       state: (formData.get("state") as string)?.toUpperCase(),
       zip: formData.get("zip") as string,
+      phoneNumber: formData.get("phoneNumber") as string,
       default: !addresses || addresses.length === 0
     };
 
@@ -131,6 +132,9 @@ const DeliveryAddress = ({ addresses, selectedAddress, setSelectedAddress, onAdd
                   <span className="text-sm text-gray-600 block">
                     {address.address}, {address.city}, {address.state} {address.zip}
                   </span>
+                  <span className="text-sm text-gray-500 block">
+                    {address.phoneNumber}
+                  </span>
                 </Label>
               </div>
               <Button
@@ -161,6 +165,18 @@ const DeliveryAddress = ({ addresses, selectedAddress, setSelectedAddress, onAdd
             <div>
               <Label htmlFor="name">Address Name (e.g. Home, Work)</Label>
               <Input id="name" name="name" required />
+            </div>
+            <div>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input 
+                id="phoneNumber" 
+                name="phoneNumber" 
+                type="tel"
+                required
+                pattern="^\+?[1-9]\d{1,14}$"
+                title="Please enter a valid phone number (e.g. +1234567890)"
+                placeholder="+1234567890"
+              />
             </div>
             <div>
               <Label htmlFor="address">Street Address</Label>

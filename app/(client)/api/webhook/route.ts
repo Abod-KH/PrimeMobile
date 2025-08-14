@@ -136,6 +136,7 @@ async function createOrderInSanity(
           city: parsedAddress.city,
           address: parsedAddress.address,
           name: parsedAddress.name,
+          phoneNumber: parsedAddress.phoneNumber, // Add phone number here
         }
       : null,
   });
