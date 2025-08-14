@@ -8,6 +8,12 @@ export const addressType = defineType({
   icon: HomeIcon,
   fields: [
     defineField({
+      name: "userId",
+      title: "User ID",
+      type: "string",
+      description: "Clerk User ID",
+    }),
+    defineField({
       name: "name",
       title: "Address Name",
       type: "string",

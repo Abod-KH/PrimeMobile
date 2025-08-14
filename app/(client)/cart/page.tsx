@@ -5,6 +5,7 @@ import {
   Metadata,
 } from "../actions/createCheckoutSession";
 import Container from "@/components/Container";
+import DeliveryAddress from "@/components/DeliveryAddress";
 import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
 import PriceFormatter from "@/components/PriceFormatter";
@@ -12,9 +13,6 @@ import ProductSideMenu from "@/components/ProductSideMenu";
 import QuantityButtons from "@/components/QuantityButtons";
 import Title from "@/components/Title";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
@@ -22,7 +20,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Address } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import useStore from "@/store";
@@ -32,6 +29,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Address } from "@/sanity.types";
 
 const CartPage = () => {
   const {
@@ -49,26 +47,36 @@ const CartPage = () => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
   const fetchAddresses = async () => {
-    setLoading(true);
+    if (!user?.id) return;
+    
     try {
-      const query = `*[_type=="address"] | order(publishedAt desc)`;
-      const data = await client.fetch(query);
+      const query = `*[_type=="address" && userId==$userId] | order(createdAt desc)`;
+      const data = await client.fetch<Address[]>(query, { userId: user.id });
       setAddresses(data);
-      const defaultAddress = data.find((addr: Address) => addr.default);
-      if (defaultAddress) {
-        setSelectedAddress(defaultAddress);
-      } else if (data.length > 0) {
-        setSelectedAddress(data[0]); // Optional: select first address if no default
+      
+      // Only set selected address if none is currently selected or if current selection is not in new data
+      if (!selectedAddress || !data.find(addr => addr._id === selectedAddress._id)) {
+        const defaultAddress = data.find((addr: Address) => addr.default);
+        if (defaultAddress) {
+          setSelectedAddress(defaultAddress);
+        } else if (data.length > 0) {
+          setSelectedAddress(data[0]);
+        } else {
+          setSelectedAddress(null);
+        }
       }
     } catch (error) {
-      console.log("Addresses fetching error:", error);
-    } finally {
-      setLoading(false);
+      console.error("Addresses fetching error:", error);
+      toast.error("Failed to load addresses");
     }
   };
+
   useEffect(() => {
-    fetchAddresses();
-  }, []);
+    if (user?.id) {
+      fetchAddresses();
+    }
+  }, [user?.id]);
+
   const handleResetCart = () => {
     const confirmed = window.confirm(
       "Are you sure you want to reset your cart?"
@@ -99,6 +107,7 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="bg-gray-50 pb-52 md:pb-10">
       {isSignedIn ? (
@@ -208,82 +217,48 @@ const CartPage = () => {
                 </div>
                 <div>
                   <div className="lg:col-span-1">
-                    <div className="hidden md:inline-block w-full bg-white p-6 rounded-lg border">
-                      <h2 className="text-xl font-semibold mb-4">
-                        Order Summary
-                      </h2>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span>SubTotal</span>
-                          <PriceFormatter amount={getSubTotalPrice()} />
+                    <div className="hidden md:inline-block w-full">
+                      <div className="bg-white p-6 rounded-lg border">
+                        <h2 className="text-xl font-semibold mb-4">
+                          Order Summary
+                        </h2>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span>SubTotal</span>
+                            <PriceFormatter amount={getSubTotalPrice()} />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span>Discount</span>
+                            <PriceFormatter
+                              amount={getSubTotalPrice() - getTotalPrice()}
+                            />
+                          </div>
+                          <Separator />
+                          <div className="flex items-center justify-between font-semibold text-lg">
+                            <span>Total</span>
+                            <PriceFormatter
+                              amount={getTotalPrice()}
+                              className="text-lg font-bold text-black"
+                            />
+                          </div>
+                          <Button
+                            className="w-full rounded-full font-semibold tracking-wide hoverEffect"
+                            size="lg"
+                            disabled={loading}
+                            onClick={handleCheckout}
+                          >
+                            {loading ? "Please wait..." : "Proceed to Checkout"}
+                          </Button>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span>Discount</span>
-                          <PriceFormatter
-                            amount={getSubTotalPrice() - getTotalPrice()}
-                          />
-                        </div>
-                        <Separator />
-                        <div className="flex items-center justify-between font-semibold text-lg">
-                          <span>Total</span>
-                          <PriceFormatter
-                            amount={getTotalPrice()}
-                            className="text-lg font-bold text-black"
-                          />
-                        </div>
-                        <Button
-                          className="w-full rounded-full font-semibold tracking-wide hoverEffect"
-                          size="lg"
-                          disabled={loading}
-                          onClick={handleCheckout}
-                        >
-                          {loading ? "Please wait..." : "Proceed to Checkout"}
-                        </Button>
                       </div>
+                      
+                      <DeliveryAddress
+                        addresses={addresses}
+                        selectedAddress={selectedAddress}
+                        setSelectedAddress={setSelectedAddress}
+                        onAddressesUpdate={fetchAddresses}
+                      />
                     </div>
-                    {addresses && (
-                      <div className="bg-white rounded-md mt-5">
-                        <Card>
-                          <CardHeader>
-                            <CardTitle>Delivery Address</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <RadioGroup
-                              defaultValue={addresses
-                                ?.find((addr) => addr.default)
-                                ?._id.toString()}
-                            >
-                              {addresses?.map((address) => (
-                                <div
-                                  key={address?._id}
-                                  onClick={() => setSelectedAddress(address)}
-                                  className={`flex items-center space-x-2 mb-4 cursor-pointer ${selectedAddress?._id === address?._id && "text-shop_dark_green"}`}
-                                >
-                                  <RadioGroupItem
-                                    value={address?._id.toString()}
-                                  />
-                                  <Label
-                                    htmlFor={`address-${address?._id}`}
-                                    className="grid gap-1.5 flex-1"
-                                  >
-                                    <span className="font-semibold">
-                                      {address?.name}
-                                    </span>
-                                    <span className="text-sm text-black/60">
-                                      {address.address}, {address.city},{" "}
-                                      {address.state} {address.zip}
-                                    </span>
-                                  </Label>
-                                </div>
-                              ))}
-                            </RadioGroup>
-                            <Button variant="outline" className="w-full mt-4">
-                              Add New Address
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    )}
                   </div>
                 </div>
                 {/* Order summary for mobile view */}

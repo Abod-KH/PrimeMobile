@@ -48,6 +48,13 @@
         },
         "optional": true
       },
+      "phoneNumber": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "address": {
         "type": "objectAttribute",
         "value": {
@@ -84,6 +91,13 @@
         "optional": true
       },
       "createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "clerkUserId": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
