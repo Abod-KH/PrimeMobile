@@ -14,6 +14,7 @@ import ProductCard from "./ProductCard";
 import { useGlobalFilters } from "./MobileMenu";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import Pagination from "@/components/Pagination";
 
 interface Props {
   categories: Category[];
@@ -39,6 +40,8 @@ const Shop = ({ categories, brands }: Props) => {
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 16; // Number of products to display per page
   // const [selectedStock, setSelectedStock] = useState<string | null>(null);
   
   // Desktop filter accordion states
@@ -279,6 +282,21 @@ const Shop = ({ categories, brands }: Props) => {
     }
   }, [sortBy, products]);
 
+  // Calculate products for current page
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+
+  // Handle page change
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    // Scroll to top of product list when page changes for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -372,7 +390,7 @@ const Shop = ({ categories, brands }: Props) => {
 
               {/* Product Count */}
               <div className="text-sm text-gray-600">
-                {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''}
+                {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''} (Page {currentPage} of {totalPages})
               </div>
 
               {/* Reset Filters Button */}
@@ -600,7 +618,7 @@ const Shop = ({ categories, brands }: Props) => {
             {/* Sorting Status */}
             <div className="mb-4 text-sm text-gray-600 flex items-center gap-2 flex-wrap">
               <span>
-                Showing {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''} sorted by {getCurrentSortText().toLowerCase()}
+                Showing {currentProducts.length} of {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''} sorted by {getCurrentSortText().toLowerCase()}
               </span>
               {isSorting && (
                 <div className="flex items-center gap-1 text-shop_dark_green animate-pulse">
@@ -623,9 +641,9 @@ const Shop = ({ categories, brands }: Props) => {
                     Product is loading . . .
                   </p>
                 </div>
-              ) : sortedProducts?.length > 0 ? (
+              ) : currentProducts?.length > 0 ? (
                 <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 transition-all duration-150 ${isSorting ? 'opacity-75 scale-95' : 'opacity-100 scale-100'}`}>
-                  {sortedProducts?.map((product) => (
+                  {currentProducts?.map((product) => (
                     <ProductCard 
                       key={product?._id} 
                       product={product} 
@@ -637,6 +655,15 @@ const Shop = ({ categories, brands }: Props) => {
                 <NoProductAvailable className="bg-white mt-0" />
               )}
             </div>
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            )}
           </div>
         </div>
       </Container>
