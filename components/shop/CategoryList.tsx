@@ -7,17 +7,21 @@ import { Label } from "../ui/label";
 interface Props {
   categories: Category[];
   selectedCategory?: string | null;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedCategory: (category: string | null) => void;
+  variant?: 'default' | 'mobile';
 }
 
 const CategoryList = ({
   categories,
   selectedCategory,
   setSelectedCategory,
+  variant = 'default'
 }: Props) => {
+  const isMobile = variant === 'mobile';
+  
   return (
-    <div className="w-full bg-white p-5">
-      <Title className="text-base font-black">Product Categories</Title>
+    <div className={`w-full ${isMobile ? 'bg-transparent p-0' : 'bg-white p-5'}`}>
+      {!isMobile && <Title className="text-base font-black">Product Categories</Title>}
       <RadioGroup value={selectedCategory || ""} className="mt-2 space-y-1">
         {categories?.map((category) => (
           <div
@@ -29,12 +33,16 @@ const CategoryList = ({
           >
             <RadioGroupItem
               value={category?.slug?.current as string}
-              id={category?.slug?.current}
-              className="rounded-sm"
+              id={isMobile ? `mobile-${category?.slug?.current}` : category?.slug?.current}
+              className={`rounded-sm ${isMobile ? 'border-shop_light_green' : ''}`}
             />
             <Label
-              htmlFor={category?.slug?.current}
-              className={`${selectedCategory === category?.slug?.current ? "font-semibold text-shop_dark_green" : "font-normal"}`}
+              htmlFor={isMobile ? `mobile-${category?.slug?.current}` : category?.slug?.current}
+              className={`text-sm ${
+                selectedCategory === category?.slug?.current 
+                  ? `font-semibold ${isMobile ? 'text-shop_light_green' : 'text-shop_dark_green'}` 
+                  : `font-normal ${isMobile ? 'text-white/80' : ''}`
+              }`}
             >
               {category?.title}
             </Label>
@@ -44,7 +52,9 @@ const CategoryList = ({
       {selectedCategory && (
         <button
           onClick={() => setSelectedCategory(null)}
-          className="text-sm font-medium mt-2 underline underline-offset-2 decoration-[1px] hover:text-shop_dark_green hoverEffect text-left"
+          className={`text-sm font-medium mt-2 underline underline-offset-2 decoration-[1px] hoverEffect text-left ${
+            isMobile ? 'text-shop_light_green hover:text-white' : 'hover:text-shop_dark_green'
+          }`}
         >
           Reset selection
         </button>

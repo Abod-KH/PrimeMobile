@@ -4,11 +4,17 @@ import React from "react";
 import { Title } from "./ui/text";
 import Link from "next/link";
 import Image from "next/image";
-import tablet from '@/images/banner/tablet.png'
-import headphone2 from '@/images/banner/headphone2.png'
-import s23Ultra from '@/images/banner/s23Ultra.png'
-
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
+import tablet from "@/images/banner/tablet.png";
+import headphone2 from "@/images/banner/headphone2.png";
+import s23Ultra from "@/images/banner/s23Ultra.png";
+import image5 from "@/images/banner/image7.jpg";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
 
@@ -21,109 +27,125 @@ interface SlideType {
 }
 
 const slides: SlideType[] = [
-	{
-		title: "Grab Upto 50% off on",
-		subtitle: "Selected headphone",
-		image: headphone2
-	},
-	{
-		title: "New Galaxy S23+ Ultra",
-		subtitle: "Supercharged for pros",
-		image: s23Ultra,
-		price: "$999.00",
-		subtext: ""
-	},
-	{
-		title: "Special Offer",
-		subtitle: "Latest Collection",
-		image: tablet
-	}
+  {
+    title: "Grab Upto 50% off on",
+    subtitle: "Selected headphone",
+    image: headphone2,
+  },
+  {
+    title: "New Galaxy S23+ Ultra",
+    subtitle: "Supercharged for pros",
+    image: s23Ultra,
+    price: "$999.00",
+    subtext: "",
+  },
+  {
+    title: "Special Offer",
+    subtitle: "Latest Collection",
+    image: image5,
+  },
 ];
 
 const HomeBanner = () => {
-	const [api, setApi] = React.useState<any>(null);
-	const [currentSlide, setCurrentSlide] = React.useState(0);
-	
-	const autoplay = React.useCallback(
-		() => Autoplay({ delay: 4000, stopOnInteraction: true }),
-		[]
-	);
+  const [api, setApi] = React.useState<any>(null);
+  const [currentSlide, setCurrentSlide] = React.useState(0);
 
-	React.useEffect(() => {
-		if (!api) return;
+  const autoplay = React.useCallback(
+    () => Autoplay({ delay: 4000, stopOnInteraction: true }),
+    []
+  );
 
-		api.on("select", () => {
-			setCurrentSlide(api.selectedScrollSnap());
-		});
-	}, [api]);
+  React.useEffect(() => {
+    if (!api) return;
+    api.on("select", () => {
+      setCurrentSlide(api.selectedScrollSnap());
+    });
+  }, [api]);
 
-	return (
-		<div className="relative">
-			<Carousel 
-				opts={{
-					align: "start",
-					loop: true,
-				}}
-				plugins={[autoplay()]}
-				setApi={setApi}
-				className="w-full"
-			>
-				<CarouselContent>
-					{slides.map((slide, index) => (
-						<CarouselItem key={index}>
-							<div className="py-8 md:py-12 px-10 lg:px-24 flex items-center justify-between min-h-[400px] max-h-[400px] overflow-hidden bg-gradient-to-br bg-[#90D1CA]">
-                <div className="space-y-5 max-w-[50%]">
-                  <Title className="text-4xl md:text-5xl font-bold text-white">
-                    {slide.title} <br />
-                    <span className="text-3xl md:text-4xl">{slide.subtitle}</span>
-                  </Title>
-                  {slide.price && (
-                    <>
-                      <p className="text-2xl font-bold text-gray-900">{slide.price}</p>
-                      <p className="text-sm text-gray-600">{slide.subtext}</p>
-                    </>
-                  )}
-                  <div className="flex gap-4">
-                    <Link
-                      href={"/shop"}
-                      className="bg-[#096B68] text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
-                    >
-                      Buy Now
-                    </Link>
+  return (
+    <div className="relative">
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        plugins={[autoplay()]}
+        setApi={setApi}
+        className="w-full"
+      >
+        <CarouselContent>
+          {slides.map((slide, index) => (
+            <CarouselItem key={index}>
+              <div className="relative overflow-visible pb-32">
+                {/* Blue Banner */}
+                <div className="py-8 md:py-12 px-10 lg:px-24 flex items-center justify-between min-h-[350px] bg-[#90D1CA]">
+                  <div className="space-y-5 max-w-[50%] z-10">
+                    <Title className="text-4xl md:text-5xl font-bold text-white">
+                      {slide.title} <br />
+                      <span className="text-3xl md:text-4xl">
+                        {slide.subtitle}
+                      </span>
+                    </Title>
+                    {slide.price && (
+                      <>
+                        <p className="text-2xl font-bold text-gray-900">
+                          {slide.price}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {slide.subtext}
+                        </p>
+                      </>
+                    )}
+                    <div className="flex gap-4">
+                      <Link
+                        href={"/shop"}
+                        className="bg-[#096B68] text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
+                      >
+                        Buy Now
+                      </Link>
+                    </div>
                   </div>
                 </div>
-                <div className="flex-1 flex justify-end items-center">
-                  <Image
-                    src={slide.image}
-                    alt={`banner_${index + 1}`}
-                    className={cn(
-                      "hidden md:block object-contain max-h-[300px]",
-                      index === 0 ? "w-[400px]" : "w-80"
-                    )}
-                    priority={index === 0}
-                  />
-                </div>
+
+                {/* Floating Image */}
+                <Image
+                  src={slide.image}
+                  alt={`banner_${index + 1}`}
+                  className="hidden md:block object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.35)] mr-30"
+                  width={index === 0 ? 420 : 320}
+                  height={index === 0 ? 360 : 300}
+                  style={{
+                    position: "absolute",
+                    right: "4rem",
+                    bottom: "30px", // hangs outside the blue banner
+                  }}
+                  priority={index === 0}
+                />
               </div>
-						</CarouselItem>
-					))}
-				</CarouselContent>
-				<CarouselPrevious className="left-4" />
-				<CarouselNext className="right-4" />
-			</Carousel>
-			<div className="flex justify-center gap-2 mt-4">
-				{slides.map((_, index) => (
-					<button
-						key={index}
-						className={cn(
-							"h-2 w-2 rounded-full transition-all",
-							currentSlide === index ? "bg-shop_dark_green w-4" : "bg-gray-300"
-						)}
-						onClick={() => api?.scrollTo(index)}
-					/>
-				))}
-			</div>
-		</div>
-	);
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-4" />
+        <CarouselNext className="right-4" />
+      </Carousel>
+
+      {/* Dots */}
+      <div className="flex justify-center gap-2 mt-4">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={cn(
+              "h-2 w-2 rounded-full transition-all",
+              currentSlide === index
+                ? "bg-shop_dark_green w-4"
+                : "bg-gray-300"
+            )}
+            onClick={() => api?.scrollTo(index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default HomeBanner;

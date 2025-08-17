@@ -9,10 +9,8 @@ import CartIcon from './CartIcon'
 import FavoriteButton from './FavoriteButton'
 import SignIn from './SignIn'
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs'
 import { getMyOrders } from "@/sanity/queries";
-import Link from "next/link";
-import { Logs } from "lucide-react";
+import ClientHeaderContent from './ClientHeaderContent';
 const Header =async () => {
   const user = await currentUser();
   const { userId } = await auth();
@@ -38,24 +36,7 @@ const Header =async () => {
         <CartIcon />
         <FavoriteButton />
 
-        {user && (
-          <Link
-            href={"/orders"}
-            className="group relative text-shop_dark_green hover:text-white hoverEffect"
-          >
-            <Logs />
-            <span className="absolute -top-1 -right-1 bg-shop_btn_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
-              {orders?.length ? orders?.length : 0}
-            </span>
-          </Link>
-        )}
-
-        <ClerkLoaded>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          {!user && <SignIn />}
-        </ClerkLoaded>
+        <ClientHeaderContent hasUser={!!user} orders={orders} />
       </div>
     </Container>
   </header>

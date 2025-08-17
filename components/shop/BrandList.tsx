@@ -7,13 +7,16 @@ import { Label } from "../ui/label";
 interface Props {
   brands: BRANDS_QUERYResult;
   selectedBrand?: string | null;
-  setSelectedBrand: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedBrand: (brand: string | null) => void;
+  variant?: 'default' | 'mobile';
 }
 
-const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
+const BrandList = ({ brands, selectedBrand, setSelectedBrand, variant = 'default' }: Props) => {
+  const isMobile = variant === 'mobile';
+  
   return (
-    <div className="w-full bg-white p-5">
-      <Title className="text-base font-black">Brands</Title>
+    <div className={`w-full ${isMobile ? 'bg-transparent p-0' : 'bg-white p-5'}`}>
+      {!isMobile && <Title className="text-base font-black">Brands</Title>}
       <RadioGroup value={selectedBrand || ""} className="mt-2 space-y-1">
         {brands?.map((brand) => (
           <div
@@ -23,12 +26,16 @@ const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
           >
             <RadioGroupItem
               value={brand?.slug?.current as string}
-              id={brand?.slug?.current}
-              className="rounded-sm"
+              id={isMobile ? `mobile-brand-${brand?.slug?.current}` : brand?.slug?.current}
+              className={`rounded-sm ${isMobile ? 'border-shop_light_green' : ''}`}
             />
             <Label
-              htmlFor={brand?.slug?.current}
-              className={`${selectedBrand === brand?.slug?.current ? "font-semibold text-shop_dark_green" : "font-normal"}`}
+              htmlFor={isMobile ? `mobile-brand-${brand?.slug?.current}` : brand?.slug?.current}
+              className={`text-sm ${
+                selectedBrand === brand?.slug?.current 
+                  ? `font-semibold ${isMobile ? 'text-shop_light_green' : 'text-shop_dark_green'}` 
+                  : `font-normal ${isMobile ? 'text-white/80' : ''}`
+              }`}
             >
               {brand?.title}
             </Label>
@@ -37,7 +44,9 @@ const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
         {selectedBrand && (
           <button
             onClick={() => setSelectedBrand(null)}
-            className="text-sm font-medium mt-2 underline underline-offset-2 decoration-[1px] hover:text-shop_dark_green hoverEffect text-left"
+            className={`text-sm font-medium mt-2 underline underline-offset-2 decoration-[1px] hoverEffect text-left ${
+              isMobile ? 'text-shop_light_green hover:text-white' : 'hover:text-shop_dark_green'
+            }`}
           >
             Reset selection
           </button>

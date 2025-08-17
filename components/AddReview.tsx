@@ -93,7 +93,7 @@ const AddReview = ({ productId, user }: AddReviewProps) => {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Write your review here..."
-          className="min-h-[100px]"
+          className="min-h-[100px] resize-none"
         />
       </div>
 

@@ -1,49 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Title from "../Title";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
-
-const priceArray = [
-  { title: "Under $100", value: "0-100" },
-  { title: "$100 - $200", value: "100-200" },
-  { title: "$200 - $300", value: "200-300" },
-  { title: "$300 - $500", value: "300-500" },
-  { title: "Over $500", value: "500-10000" },
-];
+import { RangeSlider } from "../ui/range-slider";
 
 interface Props {
-  selectedPrice?: string | null;
-  setSelectedPrice: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedPrice?: {minPrice: number, maxPrice: number} | null;
+  setSelectedPrice: (price: { minPrice: number; maxPrice: number } | null) => void;
+  variant?: 'default' | 'mobile';
 }
-const PriceList = ({ selectedPrice, setSelectedPrice }: Props) => {
+
+const PriceList = ({ selectedPrice, setSelectedPrice, variant = 'default' }: Props) => {
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(10000);
+  const isMobile = variant === 'mobile';
+
+  useEffect(() => {
+    if (selectedPrice) {
+      setMinPrice(selectedPrice.minPrice);
+      setMaxPrice(selectedPrice.maxPrice);
+    } else {
+      setMinPrice(0);
+      setMaxPrice(10000);
+    }
+  }, [selectedPrice]);
+
+  const handleValueChange = (newValues: number[]) => {
+    const [newMin, newMax] = newValues;
+    setMinPrice(newMin);
+    setMaxPrice(newMax);
+    setSelectedPrice({ minPrice: newMin, maxPrice: newMax });
+  };
+
   return (
-    <div className="w-full bg-white p-5">
-      <Title className="text-base font-black">Price</Title>
-      <RadioGroup className="mt-2 space-y-1" value={selectedPrice || ""}>
-        {priceArray?.map((price, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedPrice(price?.value)}
-            className="flex items-center space-x-2 hover:cursor-pointer"
-          >
-            <RadioGroupItem
-              value={price?.value}
-              id={price?.value}
-              className="rounded-sm"
-            />
-            <Label
-              htmlFor={price.value}
-              className={`${selectedPrice === price?.value ? "font-semibold text-shop_dark_green" : "font-normal"}`}
-            >
-              {price?.title}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
-      {selectedPrice && (
+    <div className={`w-full ${isMobile ? 'bg-transparent p-0' : 'bg-white p-5'}`}>
+      {!isMobile && <Title className="text-base font-black">Price Range</Title>}
+      <div className="mt-4">
+        <div className={`flex justify-between text-sm font-medium ${isMobile ? 'text-white' : ''}`}>
+          <span>${minPrice}</span>
+          <span>${maxPrice}</span>
+        </div>
+        <div className="mt-2">
+          <RangeSlider
+            min={0}
+            max={10000}
+            step={100}
+            value={[minPrice, maxPrice]}
+            onValueChange={handleValueChange}
+            className="w-full"
+          />
+        </div>
+      </div>
+      {(minPrice !== 0 || maxPrice !== 10000) && (
         <button
           onClick={() => setSelectedPrice(null)}
-          className="text-sm font-medium mt-2 underline underline-offset-2 decoration-[1px] hover:text-shop_dark_green hoverEffect"
+          className={`text-sm font-medium mt-4 underline underline-offset-2 decoration-[1px] hoverEffect ${
+            isMobile ? 'text-shop_light_green hover:text-white' : 'hover:text-shop_dark_green'
+          }`}
         >
           Reset selection
         </button>

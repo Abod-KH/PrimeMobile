@@ -40,6 +40,10 @@ const ProductCard = ({ product, reviews }: ProductCardProps) => {
           <p className="absolute top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect">
             Sale!
           </p>
+        ) : product?.status === "new" ? (
+          <p className="absolute text-white top-2 left-2 z-10 text-xs border border-darkColor/50 px-2 rounded-full group-hover:border-lightGreen hover:text-shop_dark_green hoverEffect bg-green-400">
+            NEW
+          </p>
         ) : (
           <Link
             href={"/deal"}
