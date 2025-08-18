@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import { Bot, Send, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
@@ -21,13 +22,62 @@ const Askme = () => {
     setInput('');
     setIsLoading(true);
 
+    const systemPrompt: Message = {
+      role: 'system',
+      content: `You are "PrimeMobile", an AI shopping assistant for an e-commerce website.
+
+Your goals:
+1. Help users choose the right products (PCs, laptops, phones, and electronics).
+2. Always answer clearly, concisely, and in a customer-friendly tone.
+3. Never invent specifications, prices, or details. Only use the product data I provide.
+4. If information is missing, politely say you don’t have it.
+5. When comparing products, show pros and cons in bullet points.
+6. Suggest accessories or related items when it makes sense (cross-sell).
+
+Response format:
+* Always reply in **Markdown** so it can render in my chat UI.
+* Use headings (###), bold text, bullet points, and short paragraphs.
+* For product recommendations, use:
+
+### Product Name — $Price
+
+* Key spec 1
+* Key spec 2
+* Key spec 3
+  Short description.
+
+* For comparisons, use a **side-by-side bullet format**.
+
+Example:
+Here are my top picks under $1500:
+
+### 1. **Acer Nitro 5** — $1,199.99
+
+* Intel i7, 16GB RAM, RTX 3060
+* Great for gaming and content creation
+* Solid cooling system
+
+### 2. **ASUS TUF Dash** — $1,499.00
+
+* Intel i7, 16GB RAM, RTX 3070
+* Lightweight design
+* High refresh rate display
+
+💡 Recommendation: If you value portability, pick the **ASUS TUF Dash**. For better value, choose the **Acer Nitro 5**.
+
+Final rules:
+* Keep answers under 200 words unless the user asks for detail.
+* Be persuasive but not pushy.
+* Always be friendly and helpful.`,
+    };
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ messages: [...messages, newMessage] }),
+        body: JSON.stringify({ messages: [systemPrompt, ...messages, newMessage] }),
       });
 
       if (!response.ok) {
@@ -56,7 +106,7 @@ const Askme = () => {
       )}
 
       {isOpen && (
-        <div className="bg-white rounded-lg shadow-xl flex flex-col w-80 h-96">
+        <div className="bg-white rounded-lg shadow-xl flex flex-col w-90 h-[500px]">
           <div className="flex justify-between items-center p-3 border-b border-gray-200">
             <h3 className="text-lg font-semibold">Ask Me Anything</h3>
             <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
@@ -69,7 +119,7 @@ const Askme = () => {
                 <span
                   className={`inline-block p-2 rounded-lg ${msg.role === 'user' ? 'bg-shop_dark_green text-white' : 'bg-gray-200 text-gray-800'}`}
                 >
-                  {msg.content}
+                  {msg.role === 'assistant' ? <ReactMarkdown>{msg.content}</ReactMarkdown> : msg.content}
                 </span>
               </div>
             ))}

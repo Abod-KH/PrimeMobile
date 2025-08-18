@@ -4,10 +4,10 @@ import React from "react";
 import { Title } from "./ui/text";
 import Link from "next/link";
 import Image from "next/image";
-import tablet from "@/images/banner/tablet.png";
+
 import headphone2 from "@/images/banner/headphone2.png";
-import s23Ultra from "@/images/banner/s23Ultra.png";
-import image5 from "@/images/banner/image7.jpg";
+import s23Ultra from "@/images/banner/111.png";
+import image5 from "@/images/banner/5.png";
 import {
   Carousel,
   CarouselContent,
@@ -24,25 +24,44 @@ interface SlideType {
   image: any;
   price?: string;
   subtext?: string;
+  imageWidth: number;
+  imageHeight: number;
+  right: string;
+  bottom: string;
+  shadow: string;
 }
 
 const slides: SlideType[] = [
   {
+    title: "Work Smart, Play Hard",
+    subtitle: "Discover high-performance laptops designed for work and game",
+    image: s23Ultra,
+    subtext: "",
+    imageWidth: 400,
+    imageHeight: 360,
+    right: "5rem",
+    bottom: "35px",
+    shadow: "drop-shadow-[-15px_20px_25px_rgba(0,0,0,0.65)]",
+  },
+  {
     title: "Grab Upto 50% off on",
     subtitle: "Selected headphone",
     image: headphone2,
+    imageWidth: 420,
+    imageHeight: 360,
+    right: "4rem",
+    bottom: "30px",
+    shadow: "drop-shadow-[0_25px_40px_rgba(0,0,0,0.60)]",
   },
   {
-    title: "New Galaxy S23+ Ultra",
-    subtitle: "Supercharged for pros",
-    image: s23Ultra,
-    price: "$999.00",
-    subtext: "",
-  },
-  {
-    title: "Special Offer",
-    subtitle: "Latest Collection",
+    title: "Best Collection, Best Price",
+    subtitle: "Upgrade your tech with the newest smartphones today.",
     image: image5,
+    imageWidth: 420,
+    imageHeight: 300,
+    right: "6rem",
+    bottom: "30px",
+    shadow: "drop-shadow-[15px_20px_25px_rgba(0,0,0,0.65)]",
   },
 ];
 
@@ -78,28 +97,28 @@ const HomeBanner = () => {
             <CarouselItem key={index}>
               <div className="relative overflow-visible pb-32">
                 {/* Blue Banner */}
-                <div className="py-8 md:py-12 px-10 lg:px-24 flex items-center justify-between min-h-[350px] bg-[#90D1CA]">
-                  <div className="space-y-5 max-w-[50%] z-10">
-                    <Title className="text-4xl md:text-5xl font-bold text-white">
+                <div className="py-8 md:py-12 px-6 md:px-24 flex items-center justify-between min-h-[350px] max-h-[350px] bg-[#90D1CA] relative">
+                  <div className="space-y-5 max-w-[60%] z-10">
+                    <Title className="text-2xl md:text-5xl font-bold text-white">
                       {slide.title} <br />
-                      <span className="text-3xl md:text-4xl">
+                      <span className="text-lg md:text-4xl">
                         {slide.subtitle}
                       </span>
                     </Title>
+
                     {slide.price && (
                       <>
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p className="text-xl md:text-2xl font-bold text-gray-900">
                           {slide.price}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          {slide.subtext}
-                        </p>
+                        <p className="text-sm text-gray-700">{slide.subtext}</p>
                       </>
                     )}
+
                     <div className="flex gap-4">
                       <Link
                         href={"/shop"}
-                        className="bg-[#096B68] text-white/90 px-5 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
+                        className="bg-[#096B68] text-white/90 px-4 py-2 rounded-md text-sm font-semibold hover:text-white hover:bg-shop_dark_green transition-colors"
                       >
                         Buy Now
                       </Link>
@@ -107,17 +126,18 @@ const HomeBanner = () => {
                   </div>
                 </div>
 
-                {/* Floating Image */}
+                {/* Floating Image (now also on mobile, but smaller) */}
                 <Image
                   src={slide.image}
                   alt={`banner_${index + 1}`}
-                  className="hidden md:block object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.35)] mr-30"
-                  width={index === 0 ? 420 : 320}
-                  height={index === 0 ? 360 : 300}
+                  className={`object-contain ${slide.shadow}`}
+                  width={slide.imageWidth}
+                  height={slide.imageHeight}
                   style={{
                     position: "absolute",
-                    right: "4rem",
-                    bottom: "30px", // hangs outside the blue banner
+                    right: slide.right,
+                    bottom: slide.bottom,
+                    maxWidth: "60%", // shrink image for mobile
                   }}
                   priority={index === 0}
                 />

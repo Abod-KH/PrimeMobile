@@ -43,6 +43,17 @@ const PRODUCT_REVIEWS_QUERY = defineQuery(`*[_type == "review" && product._ref =
   product->
 }`);
 
+const PRODUCT_SEARCH_QUERY = defineQuery(
+  `*[_type == "product" && (name match $search || description match $search || brand->name match $search || categories[]->title match $search)]{
+    _id,
+    name,
+    price,
+    stock,
+    brand->{name},
+    "categories": categories[]->title
+  }`
+);
+
 export {
   BRANDS_QUERY,
   LATEST_BLOG_QUERY,
