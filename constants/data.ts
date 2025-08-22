@@ -16,14 +16,13 @@ export const categoriesData = [
   { title: "Mobiles", href: "mobiles" },
   { title: "Appliances", href: "appliances" },
   { title: "Smartphones", href: "smartphones" },
- 
-  
   { title: "gadget accessories", href: "gadget-accessories" },
 ];
 export const productType = [
-  { title: "Gadget", value: "gadget" },
-  { title: "Appliances", value: "appliances" },
-  { title: "mobile", value: "mobiles" },
-  { title: "headphone", value: "headphone" },
-  { title: "Others", value: "others" },
+  { title: "Mobiles", value: "Mobiles" },
+  { title: "Laptops", value: "Laptops" },
+  { title: "Tablet", value: "Tablet" },
+  { title: "Accessories", value: "Accessories" },
+  { title: "Headphones", value: "Headphones" },
+  { title: "Others", value: "Others" },
 ];

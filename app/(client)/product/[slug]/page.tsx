@@ -3,12 +3,12 @@ import Container from "@/components/Container";
 import FavoriteButton from "@/components/FavoriteButton";
 import ImageView from "@/components/ImageView";
 import PriceView from "@/components/PriceView";
+import ProductCard from "@/components/ProductCard";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
 import Reviews from "@/components/Reviews";
 import { calculateAverageRating } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
-import { getProductBySlug } from "@/sanity/queries";
-import { PRODUCT_REVIEWS_QUERY } from "@/sanity/queries/query";
+import { getProductBySlug, PRODUCT_REVIEWS_QUERY } from "@/sanity/queries";
 import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -31,6 +31,20 @@ const SingleProductPage = async ({
   // Fetch reviews for this product
   const reviews = await client.fetch(PRODUCT_REVIEWS_QUERY, {
     productId: product._id,
+  });
+
+  // Fetch related products from the same category
+  const relatedProducts = await client.fetch(`
+    *[_type == "product" && 
+      _id != $productId && 
+      count(categories[@._ref in $categories]) > 0
+    ] | order(name asc)[0...5]{
+      ...,
+      "categories": categories[]->title
+    }
+  `, {
+    productId: product._id,
+    categories: product.categories?.map((cat: any) => cat._ref) || []
   });
 
   const averageRating = calculateAverageRating(reviews);
@@ -114,6 +128,20 @@ const SingleProductPage = async ({
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Related Products Section */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-6">Related Products</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {relatedProducts?.map((relatedProduct: any) => (
+            <ProductCard
+              key={relatedProduct._id}
+              product={relatedProduct}
+              reviews={[]}
+            />
+          ))}
         </div>
       </div>
 

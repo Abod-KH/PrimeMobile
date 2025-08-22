@@ -21,10 +21,11 @@ const ProductGrid = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const productsQuery = `*[_type == "product" && variant == $variant] | order(name asc){
+        const productsQuery = `*[_type == "product" && variant == $variant] | order(name asc)[0...10]{
+          
           ...,"categories": categories[]->title
         }`;
-        const params = { variant: selectedTab.toLowerCase() };
+        const params = { variant: selectedTab };
         const products = await client.fetch(productsQuery, params);
         setProducts(products);
 

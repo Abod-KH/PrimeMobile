@@ -12,6 +12,16 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { productId, rating, comment, userEmail, userName, userImage } = body;
 
+    // Check if user has already reviewed this product
+    const existingReview = await client.fetch(
+      `*[_type == "review" && product._ref == $productId && userEmail == $userEmail][0]`,
+      { productId, userEmail }
+    );
+
+    if (existingReview) {
+      return new NextResponse("You have already reviewed this product", { status: 400 });
+    }
+
     // Create the review document
     const review = await client.create({
       _type: "review",

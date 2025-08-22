@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import GoogleTranslate from "./GoogleTranslate";
 
 const Footer = () => {
   return (
@@ -58,6 +59,7 @@ const Footer = () => {
           </div>
           <div className="space-y-6">
             <SubTitle className="text-shop_dark_green">Get In Touch</SubTitle>
+            
             <ul className="space-y-4">
               <li className="text-white flex items-center gap-3 group">
                 <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
@@ -96,18 +98,10 @@ const Footer = () => {
                 </div>
               </li>
             </ul>
-            {/* <div className="space-y-4">
-              <SubTitle className="text-green-500">Newsletter</SubTitle>
-              <Input 
-                placeholder="Your email" 
-                type="email" 
-                required 
-                className="bg-transparent border-gray-700 text-white placeholder:text-gray-500"
-              />
-              <Button className="w-full bg-green-500 hover:bg-green-600">
-                Subscribe
-              </Button>
-            </div> */}
+            <div className="mb-6">
+              <SubTitle className="text-shop_dark_green text-sm mb-2">Select Language</SubTitle>
+              <GoogleTranslate />
+            </div>
           </div>
         </div>
         <div className="py-3 border-t border-gray-800 text-center text-sm text-white">

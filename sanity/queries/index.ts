@@ -9,6 +9,7 @@ import {
   MY_ORDERS_QUERY,
   
   PRODUCT_BY_SLUG_QUERY,
+  PRODUCT_REVIEWS_QUERY
   
 } from "./query";
 
@@ -133,5 +134,6 @@ export {
   getProductBySlug,
   getBrand,
   getMyOrders,
-  searchProducts
+  searchProducts,
+  PRODUCT_REVIEWS_QUERY
 };

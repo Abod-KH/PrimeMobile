@@ -27,6 +27,11 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Check if current user has already reviewed
+  const hasUserReviewed = user && reviews.some(
+    review => review.userEmail === user.emailAddresses[0]?.emailAddress
+  );
+
   const handleDeleteReview = async (reviewId: string) => {
     if (!confirm("Are you sure you want to delete this review?")) {
       return;
@@ -56,7 +61,11 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
       <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
       
       {isSignedIn ? (
-        <AddReview productId={productId} user={user} />
+        hasUserReviewed ? (
+          <p className="text-gray-600 mb-6">You have already reviewed this product.</p>
+        ) : (
+          <AddReview productId={productId} user={user} />
+        )
       ) : (
         <p className="text-gray-600 mb-6">Please sign in to leave a review.</p>
       )}
