@@ -1,6 +1,6 @@
 "use client";
 import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
@@ -64,7 +64,7 @@ const Shop = ({ categories, brands }: Props) => {
     if (brandParams && selectedBrand !== brandParams) {
       setSelectedBrand(brandParams);
     }
-  }, [categoryParams, brandParams]); // Run only when params change
+  }, [categoryParams, brandParams, selectedCategory, selectedBrand, setSelectedCategory, setSelectedBrand]); // Run only when params change
 
   // Create wrapper functions that update both local and global state
   const updateCategory = (category: string | null) => {
@@ -153,7 +153,7 @@ const Shop = ({ categories, brands }: Props) => {
     return count;
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     console.log('Shop: fetchProducts called with filters:', {
       category: selectedCategory,
       brand: selectedBrand,
@@ -185,15 +185,11 @@ const Shop = ({ categories, brands }: Props) => {
         ...,\"categories\": categories[]->title, _createdAt
       }`;
       
-      console.log('Shop: Sanity query:', query);
-      console.log('Shop: Query parameters:', { selectedCategory, selectedBrand, minPrice, maxPrice });
-      
       const data = await client.fetch(query, 
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
       
-      console.log('Shop: Products fetched:', data.length);
       setProducts(data);
 
       // Fetch reviews for all products
@@ -209,7 +205,11 @@ const Shop = ({ categories, brands }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
@@ -268,10 +268,6 @@ const Shop = ({ categories, brands }: Props) => {
       default: return 'Name (A-Z)';
     }
   };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
 
   // Handle sorting changes
   useEffect(() => {

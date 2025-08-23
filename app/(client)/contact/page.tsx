@@ -1,16 +1,13 @@
-import Container from "@/components/Container";
-import Title from "@/components/Title";
-
 const ContactPage = () => {
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">Contact Us</h1>
       <p className="mb-6 text-gray-600">
-        We’d love to hear from you. Please fill out the form below and we’ll
+        We'd love to hear from you. Please fill out the form below and we'll
         get back to you as soon as possible.
       </p>
 
-      <form  className="space-y-4">
+      <form className="space-y-4">
         {/* Name */}
         <div>
           <label htmlFor="name" className="block font-medium mb-1">
@@ -21,7 +18,6 @@ const ContactPage = () => {
             id="name"
             name="name"
             placeholder="Enter your name"
-           
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop_dark_green"
             required
           />
@@ -37,7 +33,6 @@ const ContactPage = () => {
             id="email"
             name="email"
             placeholder="Your email"
-           
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop_dark_green"
             required
           />
@@ -52,7 +47,6 @@ const ContactPage = () => {
             id="message"
             name="message"
             placeholder="Your message..."
-            
             rows={5}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-shop_dark_green resize-none"
             required
@@ -70,6 +64,5 @@ const ContactPage = () => {
     </div>
   );
 };
-
 
 export default ContactPage;

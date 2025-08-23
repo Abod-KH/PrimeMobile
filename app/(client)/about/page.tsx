@@ -16,10 +16,10 @@ const AboutPage = () => {
           Founded in [Year], our journey began with a passion for [mention initial inspiration or product type]. Since then, we have grown into a trusted platform, serving thousands of happy customers worldwide.
         </p>
         <p className="text-lg leading-relaxed mb-4">
-          At our store, you'll find everything from [product category 1] to [product category 2], and much more. We carefully curate our collection to ensure that every item meets our strict standards of quality and durability.
+          At our store, you&apos;ll find everything from [product category 1] to [product category 2], and much more. We carefully curate our collection to ensure that every item meets our strict standards of quality and durability.
         </p>
         <p className="text-lg leading-relaxed mb-4">
-          Thank you for choosing us for your shopping needs. We are constantly working to improve our services and expand our product offerings. If you have any questions or feedback, please don't hesitate to contact us.
+          Thank you for choosing us for your shopping needs. We are constantly working to improve our services and expand our product offerings. If you have any questions or feedback, please don&apos;t hesitate to contact us.
         </p>
         <p className="text-lg leading-relaxed">
           Happy Shopping!

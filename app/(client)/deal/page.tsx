@@ -6,11 +6,15 @@ import { client } from "@/sanity/lib/client";
 import { getDealProducts } from "@/sanity/queries";
 import React from "react";
 
+interface Review {
+  rating: number;
+}
+
 const DealPage = async () => {
   const products = await getDealProducts();
   
   // Fetch reviews for all products
-  const productReviews: {[key: string]: any[]} = {};
+  const productReviews: {[key: string]: Review[]} = {};
   for (const product of products) {
     const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
     const reviews = await client.fetch(reviewsQuery, { productId: product._id });
