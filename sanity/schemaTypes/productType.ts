@@ -86,7 +86,7 @@ export const productType = defineType({
           { title: "Mobiles", value: "Mobiles" },
           { title: "Laptops", value: "Laptops" },
           { title: "Tablet", value: "Tablet" },
-          { title: "Accessories", value: " accessories" },
+          { title: "Accessories", value: "Accessories" },
           { title: "Headphones", value: "Headphones" },
           { title: "Others", value: "others" },
         ],

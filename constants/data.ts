@@ -24,5 +24,5 @@ export const productType = [
   { title: "Tablet", value: "Tablet" },
   { title: "Accessories", value: "Accessories" },
   { title: "Headphones", value: "Headphones" },
-  { title: "Others", value: "Others" },
+  { title: "Others", value: "others" }
 ];

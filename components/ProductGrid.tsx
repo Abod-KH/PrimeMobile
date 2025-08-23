@@ -15,15 +15,15 @@ const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
+  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
   
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const productsQuery = `*[_type == "product" && variant == $variant] | order(name asc)[0...10]{
-          
-          ...,"categories": categories[]->title
+          ...,
+          "categories": categories[]->title
         }`;
         const params = { variant: selectedTab };
         const products = await client.fetch(productsQuery, params);
