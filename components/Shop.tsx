@@ -23,12 +23,16 @@ interface Props {
 
 type SortOption = 'name-asc' | 'name-desc' | 'date-old-new' | 'date-new-old' | 'rating-high-low';
 
+interface Review {
+  rating: number;
+}
+
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
+  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
@@ -174,7 +178,7 @@ const Shop = ({ categories, brands }: Props) => {
         ${stockCondition}
       ] 
       | order(name asc) {
-        ...,\"categories\": categories[]->title, _createdAt
+        ...,\"categories\": categories[]->title
       }`;
       
       const data = await client.fetch(query, 
@@ -185,10 +189,10 @@ const Shop = ({ categories, brands }: Props) => {
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: any[]} = {};
+      const reviewsData: {[key: string]: Review[]} = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == \"review\" && product._ref == $productId]{rating}`;
-        const reviews = await client.fetch(reviewsQuery, { productId: product._id });
+        const reviews = await client.fetch<Review[]>(reviewsQuery, { productId: product._id });
         reviewsData[product._id] = reviews;
       }
       setProductReviews(reviewsData);
@@ -232,10 +236,10 @@ const Shop = ({ categories, brands }: Props) => {
           const bReviews = productReviews[b._id] || [];
           
           const aRating = aReviews.length > 0 
-            ? aReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / aReviews.length 
+            ? aReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / aReviews.length 
             : 0;
           const bRating = bReviews.length > 0 
-            ? bReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / bReviews.length 
+            ? bReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / bReviews.length 
             : 0;
           
           // If ratings are equal, sort by number of reviews (more reviews = higher priority)
