@@ -7,7 +7,6 @@ import MobileMenu from './MobileMenu'
 import SearchBar from './SearchBar'
 import CartIcon from './CartIcon'
 import FavoriteButton from './FavoriteButton'
-import SignIn from './SignIn'
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { getMyOrders } from "@/sanity/queries";
 import ClientHeaderContent from './ClientHeaderContent';

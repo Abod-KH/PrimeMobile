@@ -9,7 +9,7 @@ import Reviews from "@/components/Reviews";
 import { calculateAverageRating } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
 import { getProductBySlug, PRODUCT_REVIEWS_QUERY } from "@/sanity/queries";
-import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
+import { CornerDownLeft, StarIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
 import { FaRegQuestionCircle } from "react-icons/fa";

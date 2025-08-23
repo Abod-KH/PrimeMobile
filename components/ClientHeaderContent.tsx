@@ -6,9 +6,23 @@ import { Logs } from 'lucide-react';
 import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs';
 import SignIn from './SignIn';
 
+interface Order {
+  _id: string;
+  orderNumber: string;
+  status: string;
+  items: Array<{
+    product: {
+      _id: string;
+      name: string;
+      price: number;
+    };
+    quantity: number;
+  }>;
+}
+
 interface ClientHeaderContentProps {
   hasUser: boolean;
-  orders: any; // Replace 'any' with the actual type of your orders object
+  orders: Order[];
 }
 
 const ClientHeaderContent: React.FC<ClientHeaderContentProps> = ({ hasUser, orders }) => {

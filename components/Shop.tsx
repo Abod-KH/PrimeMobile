@@ -30,19 +30,11 @@ const Shop = ({ categories, brands }: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
-  // const [selectedCategory, setSelectedCategory] = useState<string | null>(
-  //   categoryParams || null
-  // );
-  // const [selectedBrand, setSelectedBrand] = useState<string | null>(
-  //   brandParams || null
-  // );
-  // const [selectedPrice, setSelectedPrice] = useState<{minPrice: number, maxPrice: number} | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 16; // Number of products to display per page
-  // const [selectedStock, setSelectedStock] = useState<string | null>(null);
   
   // Desktop filter accordion states
   const [expandedDesktopCategories, setExpandedDesktopCategories] = useState(true);
@@ -67,21 +59,21 @@ const Shop = ({ categories, brands }: Props) => {
   }, [categoryParams, brandParams, selectedCategory, selectedBrand, setSelectedCategory, setSelectedBrand]); // Run only when params change
 
   // Create wrapper functions that update both local and global state
-  const updateCategory = (category: string | null) => {
+  const updateCategory = useCallback((category: string | null) => {
     setSelectedCategory(category);
-  };
+  }, [setSelectedCategory]);
 
-  const updateBrand = (brand: string | null) => {
+  const updateBrand = useCallback((brand: string | null) => {
     setSelectedBrand(brand);
-  };
+  }, [setSelectedBrand]);
 
-  const updatePrice = (price: { minPrice: number; maxPrice: number } | null) => {
+  const updatePrice = useCallback((price: { minPrice: number; maxPrice: number } | null) => {
     setSelectedPrice(price);
-  };
+  }, [setSelectedPrice]);
 
-  const updateStock = (stock: string | null) => {
+  const updateStock = useCallback((stock: string | null) => {
     setSelectedStock(stock);
-  };
+  }, [setSelectedStock]);
 
   // Sync with global filters (only for initial load)
   useEffect(() => {
@@ -93,15 +85,15 @@ const Shop = ({ categories, brands }: Props) => {
     });
     
     // No need for explicit sync here, useGlobalFilters handles it
-  }, []); // Only run once on mount
+  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]); // Only run once on mount
 
   // Reset all filters function
-  const resetAllFilters = () => {
+  const resetAllFilters = useCallback(() => {
     updateCategory(null);
     updateBrand(null);
     updatePrice(null);
     updateStock(null);
-  };
+  }, [updateCategory, updateBrand, updatePrice, updateStock]);
 
   // Check if any filters are active
   const hasActiveFilters = selectedCategory || selectedBrand || (selectedPrice && (selectedPrice.minPrice !== 0 || selectedPrice.maxPrice !== 10000)) || selectedStock;
@@ -163,8 +155,8 @@ const Shop = ({ categories, brands }: Props) => {
     
     setLoading(true);
     try {
-      let minPrice = selectedPrice?.minPrice ?? 0;
-      let maxPrice = selectedPrice?.maxPrice ?? 10000;
+      const minPrice = selectedPrice?.minPrice ?? 0;
+      const maxPrice = selectedPrice?.maxPrice ?? 10000;
       
       // Build stock filter condition
       let stockCondition = "";

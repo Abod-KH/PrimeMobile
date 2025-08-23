@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SocialMedia from "./SocialMedia";
 import { useOutsideClick } from "@/hooks";
-import { Category } from "@/sanity.types";
+import { Category, BRANDS_QUERYResult } from "@/sanity.types";
 import CategoryList from "./shop/CategoryList";
 import BrandList from "./shop/BrandList";
 import PriceList from "./shop/PriceList";
@@ -17,7 +17,7 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   categories?: Category[];
-  brands?: any[];
+  brands?: BRANDS_QUERYResult;
   selectedCategory?: string | null;
   selectedBrand?: string | null;
   selectedPrice?: { minPrice: number; maxPrice: number } | null;

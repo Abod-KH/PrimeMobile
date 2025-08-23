@@ -6,7 +6,7 @@ import { client } from "@/sanity/lib/client";
 import { Category, BRANDS_QUERYResult } from "@/sanity.types";
 
 // Create a global filter state that can be accessed by both components
-let globalFilterState = {
+const globalFilterState = {
   selectedCategory: null as string | null,
   selectedBrand: null as string | null,
   selectedPrice: null as { minPrice: number; maxPrice: number } | null,

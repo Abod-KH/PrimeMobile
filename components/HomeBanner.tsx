@@ -3,7 +3,7 @@
 import React from "react";
 import { Title } from "./ui/text";
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 import headphone2 from "@/images/banner/headphone2.png";
 import s23Ultra from "@/images/banner/111.png";
@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 interface SlideType {
   title: string;
   subtitle: string;
-  image: any;
+  image: StaticImageData;
   price?: string;
   subtext?: string;
   imageWidth: number;
@@ -65,8 +65,16 @@ const slides: SlideType[] = [
   },
 ];
 
+interface CarouselApi {
+  scrollNext: () => void;
+  scrollPrev: () => void;
+  scrollTo: (index: number) => void;
+  selectedScrollSnap: () => number;
+  on: (eventName: string, callback: () => void) => void;
+}
+
 const HomeBanner = () => {
-  const [api, setApi] = React.useState<any>(null);
+  const [api, setApi] = React.useState<CarouselApi | null>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
 
   const autoplay = React.useCallback(
