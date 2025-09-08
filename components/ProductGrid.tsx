@@ -11,13 +11,9 @@ import HomeTabbar from "./HomeTabbar";
 import { productType } from "@/constants/data";
 import { Product } from "@/sanity.types";
 
-interface Review {
-  rating: number;
-}
-
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
   
@@ -30,14 +26,14 @@ const ProductGrid = () => {
           "categories": categories[]->title
         }`;
         const params = { variant: selectedTab };
-        const products = await client.fetch<Product[]>(productsQuery, params);
+        const products = await client.fetch(productsQuery, params);
         setProducts(products);
 
         // Fetch reviews for all products
-        const reviewsData: {[key: string]: Review[]} = {};
+        const reviewsData: {[key: string]: any[]} = {};
         for (const product of products) {
           const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
-          const reviews = await client.fetch<Review[]>(reviewsQuery, { productId: product._id });
+          const reviews = await client.fetch(reviewsQuery, { productId: product._id });
           reviewsData[product._id] = reviews;
         }
         setProductReviews(reviewsData);

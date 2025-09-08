@@ -1,7 +1,7 @@
 "use client";
 import { Category, Product } from "@/sanity.types";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { client } from "@/sanity/lib/client";
 import { AnimatePresence, motion } from "motion/react";
@@ -14,14 +14,10 @@ interface Props {
   slug: string;
 }
 
-interface Review {
-  rating: number;
-}
-
 const CategoryProducts = ({ categories, slug }: Props) => {
   const [currentSlug, setCurrentSlug] = useState(slug);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
+  const [products, setProducts] = useState([]);
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -31,21 +27,21 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     router.push(`/category/${newSlug}`, { scroll: false }); // Update URL without
   };
 
-  const fetchProducts = useCallback(async (categorySlug: string) => {
+  const fetchProducts = async (categorySlug: string) => {
     setLoading(true);
     try {
       const productsQuery = `
         *[_type == 'product' && references(*[_type == "category" && slug.current == $categorySlug]._id)] | order(name asc){
         ...,"categories": categories[]->title}
       `;
-      const data = await client.fetch<Product[]>(productsQuery, { categorySlug });
+      const data = await client.fetch(productsQuery, { categorySlug });
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: Review[]} = {};
+      const reviewsData: {[key: string]: any[]} = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
-        const reviews = await client.fetch<Review[]>(reviewsQuery, { productId: product._id });
+        const reviews = await client.fetch(reviewsQuery, { productId: product._id });
         reviewsData[product._id] = reviews;
       }
       setProductReviews(reviewsData);
@@ -55,11 +51,11 @@ const CategoryProducts = ({ categories, slug }: Props) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchProducts(currentSlug);
-  }, [currentSlug, fetchProducts]);
+  }, [router]);
 
   return (
     <div className="py-5 flex flex-col md:flex-row items-start gap-5">

@@ -36,7 +36,7 @@ export async function createCheckoutSession(
         orderNumber: metadata.orderNumber,
         customerName: metadata.customerName,
         customerEmail: metadata.customerEmail,
-        ...(metadata.clerkUserId && { clerkUserId: metadata.clerkUserId }),
+        clerkUserId: metadata.clerkUserId!,
         address: JSON.stringify(metadata.address),
       },
       mode: "payment",
@@ -52,7 +52,7 @@ export async function createCheckoutSession(
       line_items: items?.map((item) => ({
         price_data: {
           currency: "USD",
-          unit_amount: Math.round(item?.product?.price ?? 0 * 100),
+          unit_amount: Math.round(item?.product?.price! * 100),
           product_data: {
             name: item?.product?.name || "Unknown Product",
             description: item?.product?.description,
@@ -63,7 +63,7 @@ export async function createCheckoutSession(
                 : undefined,
           },
         },
-        quantity: item?.quantity || 1,
+        quantity: item?.quantity,
       })),
     };
     if (customerId) {

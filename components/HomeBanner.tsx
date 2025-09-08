@@ -3,8 +3,7 @@
 import React from "react";
 import { Title } from "./ui/text";
 import Link from "next/link";
-import Image, { StaticImageData } from "next/image";
-import type { UseEmblaCarouselType } from "embla-carousel-react";
+import Image from "next/image";
 
 import headphone2 from "@/images/banner/headphone2.png";
 import s23Ultra from "@/images/banner/111.png";
@@ -22,7 +21,7 @@ import { cn } from "@/lib/utils";
 interface SlideType {
   title: string;
   subtitle: string;
-  image: StaticImageData;
+  image: any;
   price?: string;
   subtext?: string;
   imageWidth: number;
@@ -67,12 +66,8 @@ const slides: SlideType[] = [
 ];
 
 const HomeBanner = () => {
-  const [api, setApi] = React.useState<UseEmblaCarouselType[1] | null>(null);
+  const [api, setApi] = React.useState<any>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
-
-  const handleApiChange = React.useCallback((newApi: UseEmblaCarouselType[1]) => {
-    setApi(newApi);
-  }, []);
 
   const autoplay = React.useCallback(
     () => Autoplay({ delay: 4000, stopOnInteraction: true }),
@@ -94,7 +89,7 @@ const HomeBanner = () => {
           loop: true,
         }}
         plugins={[autoplay()]}
-        setApi={handleApiChange}
+        setApi={setApi}
         className="w-full"
       >
         <CarouselContent>

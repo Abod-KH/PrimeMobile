@@ -1,6 +1,6 @@
 "use client";
 import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
@@ -23,22 +23,26 @@ interface Props {
 
 type SortOption = 'name-asc' | 'name-desc' | 'date-old-new' | 'date-new-old' | 'rating-high-low';
 
-interface Review {
-  rating: number;
-}
-
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
+  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
   const [loading, setLoading] = useState(false);
+  // const [selectedCategory, setSelectedCategory] = useState<string | null>(
+  //   categoryParams || null
+  // );
+  // const [selectedBrand, setSelectedBrand] = useState<string | null>(
+  //   brandParams || null
+  // );
+  // const [selectedPrice, setSelectedPrice] = useState<{minPrice: number, maxPrice: number} | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 16; // Number of products to display per page
+  // const [selectedStock, setSelectedStock] = useState<string | null>(null);
   
   // Desktop filter accordion states
   const [expandedDesktopCategories, setExpandedDesktopCategories] = useState(true);
@@ -60,24 +64,24 @@ const Shop = ({ categories, brands }: Props) => {
     if (brandParams && selectedBrand !== brandParams) {
       setSelectedBrand(brandParams);
     }
-  }, [categoryParams, brandParams, selectedCategory, selectedBrand, setSelectedCategory, setSelectedBrand]); // Run only when params change
+  }, [categoryParams, brandParams]); // Run only when params change
 
   // Create wrapper functions that update both local and global state
-  const updateCategory = useCallback((category: string | null) => {
+  const updateCategory = (category: string | null) => {
     setSelectedCategory(category);
-  }, [setSelectedCategory]);
+  };
 
-  const updateBrand = useCallback((brand: string | null) => {
+  const updateBrand = (brand: string | null) => {
     setSelectedBrand(brand);
-  }, [setSelectedBrand]);
+  };
 
-  const updatePrice = useCallback((price: { minPrice: number; maxPrice: number } | null) => {
+  const updatePrice = (price: { minPrice: number; maxPrice: number } | null) => {
     setSelectedPrice(price);
-  }, [setSelectedPrice]);
+  };
 
-  const updateStock = useCallback((stock: string | null) => {
+  const updateStock = (stock: string | null) => {
     setSelectedStock(stock);
-  }, [setSelectedStock]);
+  };
 
   // Sync with global filters (only for initial load)
   useEffect(() => {
@@ -89,15 +93,15 @@ const Shop = ({ categories, brands }: Props) => {
     });
     
     // No need for explicit sync here, useGlobalFilters handles it
-  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]); // Only run once on mount
+  }, []); // Only run once on mount
 
   // Reset all filters function
-  const resetAllFilters = useCallback(() => {
+  const resetAllFilters = () => {
     updateCategory(null);
     updateBrand(null);
     updatePrice(null);
     updateStock(null);
-  }, [updateCategory, updateBrand, updatePrice, updateStock]);
+  };
 
   // Check if any filters are active
   const hasActiveFilters = selectedCategory || selectedBrand || (selectedPrice && (selectedPrice.minPrice !== 0 || selectedPrice.maxPrice !== 10000)) || selectedStock;
@@ -149,7 +153,7 @@ const Shop = ({ categories, brands }: Props) => {
     return count;
   };
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = async () => {
     console.log('Shop: fetchProducts called with filters:', {
       category: selectedCategory,
       brand: selectedBrand,
@@ -159,8 +163,8 @@ const Shop = ({ categories, brands }: Props) => {
     
     setLoading(true);
     try {
-      const minPrice = selectedPrice?.minPrice ?? 0;
-      const maxPrice = selectedPrice?.maxPrice ?? 10000;
+      let minPrice = selectedPrice?.minPrice ?? 0;
+      let maxPrice = selectedPrice?.maxPrice ?? 10000;
       
       // Build stock filter condition
       let stockCondition = "";
@@ -178,21 +182,25 @@ const Shop = ({ categories, brands }: Props) => {
         ${stockCondition}
       ] 
       | order(name asc) {
-        ...,\"categories\": categories[]->title
+        ...,\"categories\": categories[]->title, _createdAt
       }`;
+      
+      console.log('Shop: Sanity query:', query);
+      console.log('Shop: Query parameters:', { selectedCategory, selectedBrand, minPrice, maxPrice });
       
       const data = await client.fetch(query, 
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
       
+      console.log('Shop: Products fetched:', data.length);
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: Review[]} = {};
+      const reviewsData: {[key: string]: any[]} = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == \"review\" && product._ref == $productId]{rating}`;
-        const reviews = await client.fetch<Review[]>(reviewsQuery, { productId: product._id });
+        const reviews = await client.fetch(reviewsQuery, { productId: product._id });
         reviewsData[product._id] = reviews;
       }
       setProductReviews(reviewsData);
@@ -201,11 +209,7 @@ const Shop = ({ categories, brands }: Props) => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  };
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
@@ -236,10 +240,10 @@ const Shop = ({ categories, brands }: Props) => {
           const bReviews = productReviews[b._id] || [];
           
           const aRating = aReviews.length > 0 
-            ? aReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / aReviews.length 
+            ? aReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / aReviews.length 
             : 0;
           const bRating = bReviews.length > 0 
-            ? bReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / bReviews.length 
+            ? bReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / bReviews.length 
             : 0;
           
           // If ratings are equal, sort by number of reviews (more reviews = higher priority)
@@ -264,6 +268,10 @@ const Shop = ({ categories, brands }: Props) => {
       default: return 'Name (A-Z)';
     }
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
 
   // Handle sorting changes
   useEffect(() => {

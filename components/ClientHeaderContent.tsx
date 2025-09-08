@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { Logs } from 'lucide-react';
 import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs';
 import SignIn from './SignIn';
-import { MY_ORDERS_QUERYResult } from '@/sanity.types';
 
 interface ClientHeaderContentProps {
   hasUser: boolean;
-  orders: MY_ORDERS_QUERYResult | null;
+  orders: any; // Replace 'any' with the actual type of your orders object
 }
 
 const ClientHeaderContent: React.FC<ClientHeaderContentProps> = ({ hasUser, orders }) => {
@@ -22,7 +21,7 @@ const ClientHeaderContent: React.FC<ClientHeaderContentProps> = ({ hasUser, orde
         >
           <Logs />
           <span className="absolute -top-1 -right-1 bg-shop_btn_dark_green text-white h-3.5 w-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
-            {orders?.length ?? 0}
+            {orders?.length ? orders?.length : 0}
           </span>
         </Link>
       )}
