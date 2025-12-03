@@ -13,7 +13,8 @@ import { Product } from "@/sanity.types";
 
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
+interface Review { rating: number; }
+  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
   
@@ -30,7 +31,7 @@ const ProductGrid = () => {
         setProducts(products);
 
         // Fetch reviews for all products
-        const reviewsData: {[key: string]: any[]} = {};
+        const reviewsData: {[key: string]: Review[]} = {};
         for (const product of products) {
           const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
           const reviews = await client.fetch(reviewsQuery, { productId: product._id });

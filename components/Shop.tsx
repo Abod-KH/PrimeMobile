@@ -28,7 +28,8 @@ const Shop = ({ categories, brands }: Props) => {
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
+interface Review { rating: number; }
+  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
   const [loading, setLoading] = useState(false);
   // const [selectedCategory, setSelectedCategory] = useState<string | null>(
   //   categoryParams || null
@@ -64,7 +65,7 @@ const Shop = ({ categories, brands }: Props) => {
     if (brandParams && selectedBrand !== brandParams) {
       setSelectedBrand(brandParams);
     }
-  }, [categoryParams, brandParams]); // Run only when params change
+  }, [categoryParams, selectedCategory, setSelectedCategory, brandParams, selectedBrand, setSelectedBrand]); // Run only when params change
 
   // Create wrapper functions that update both local and global state
   const updateCategory = (category: string | null) => {
@@ -93,7 +94,7 @@ const Shop = ({ categories, brands }: Props) => {
     });
     
     // No need for explicit sync here, useGlobalFilters handles it
-  }, []); // Only run once on mount
+  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]); // Only run once on mount
 
   // Reset all filters function
   const resetAllFilters = () => {
@@ -163,8 +164,8 @@ const Shop = ({ categories, brands }: Props) => {
     
     setLoading(true);
     try {
-      let minPrice = selectedPrice?.minPrice ?? 0;
-      let maxPrice = selectedPrice?.maxPrice ?? 10000;
+      const minPrice = selectedPrice?.minPrice ?? 0;
+      const maxPrice = selectedPrice?.maxPrice ?? 10000;
       
       // Build stock filter condition
       let stockCondition = "";
@@ -197,7 +198,7 @@ const Shop = ({ categories, brands }: Props) => {
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: any[]} = {};
+      const reviewsData: {[key: string]: Review[]} = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == \"review\" && product._ref == $productId]{rating}`;
         const reviews = await client.fetch(reviewsQuery, { productId: product._id });
@@ -240,10 +241,10 @@ const Shop = ({ categories, brands }: Props) => {
           const bReviews = productReviews[b._id] || [];
           
           const aRating = aReviews.length > 0 
-            ? aReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / aReviews.length 
+            ? aReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / aReviews.length 
             : 0;
           const bRating = bReviews.length > 0 
-            ? bReviews.reduce((sum: number, review: any) => sum + (review.rating || 0), 0) / bReviews.length 
+            ? bReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / bReviews.length 
             : 0;
           
           // If ratings are equal, sort by number of reviews (more reviews = higher priority)

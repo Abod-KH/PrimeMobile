@@ -5,17 +5,26 @@ import ImageView from "@/components/ImageView";
 import PriceView from "@/components/PriceView";
 import ProductCard from "@/components/ProductCard";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
+import { Product } from "@/sanity.types";
 import Reviews from "@/components/Reviews";
 import { calculateAverageRating } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
 import { getProductBySlug, PRODUCT_REVIEWS_QUERY } from "@/sanity/queries";
-import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
+import { CornerDownLeft, StarIcon } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
 import { FaRegQuestionCircle } from "react-icons/fa";
 import { FiShare2 } from "react-icons/fi";
 import { RxBorderSplit } from "react-icons/rx";
 import { TbTruckDelivery } from "react-icons/tb";
+
+type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  _key: string;
+  internalGroqTypeReferenceTo?: "category";
+};
 
 const SingleProductPage = async ({
   params,
@@ -34,7 +43,7 @@ const SingleProductPage = async ({
   });
 
   // Fetch related products from the same category
-  const relatedProducts = await client.fetch(`
+  const relatedProducts: Product[] = await client.fetch(`
     *[_type == "product" && 
       _id != $productId && 
       count(categories[@._ref in $categories]) > 0
@@ -44,7 +53,7 @@ const SingleProductPage = async ({
     }
   `, {
     productId: product._id,
-    categories: product.categories?.map((cat: any) => cat._ref) || []
+    categories: product.categories?.map((cat: CategoryReference) => cat._ref) || []
   });
 
   const averageRating = calculateAverageRating(reviews);
@@ -135,7 +144,7 @@ const SingleProductPage = async ({
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-6">Related Products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {relatedProducts?.map((relatedProduct: any) => (
+          {relatedProducts?.map((relatedProduct: Product) => (
             <ProductCard
               key={relatedProduct._id}
               product={relatedProduct}

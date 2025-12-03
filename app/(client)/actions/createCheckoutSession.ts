@@ -36,7 +36,7 @@ export async function createCheckoutSession(
         orderNumber: metadata.orderNumber,
         customerName: metadata.customerName,
         customerEmail: metadata.customerEmail,
-        clerkUserId: metadata.clerkUserId!,
+        clerkUserId: metadata.clerkUserId || '',
         address: JSON.stringify(metadata.address),
       },
       mode: "payment",

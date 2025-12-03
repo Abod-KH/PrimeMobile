@@ -1,5 +1,9 @@
 "use client";
 import { Category, Product } from "@/sanity.types";
+
+interface Review {
+  rating: number;
+}
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -17,7 +21,7 @@ interface Props {
 const CategoryProducts = ({ categories, slug }: Props) => {
   const [currentSlug, setCurrentSlug] = useState(slug);
   const [products, setProducts] = useState([]);
-  const [productReviews, setProductReviews] = useState<{[key: string]: any[]}>({});
+  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -38,7 +42,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: any[]} = {};
+      const reviewsData: {[key: string]: Review[]} = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == "review" && product._ref == $productId]{rating}`;
         const reviews = await client.fetch(reviewsQuery, { productId: product._id });
@@ -55,7 +59,7 @@ const CategoryProducts = ({ categories, slug }: Props) => {
 
   useEffect(() => {
     fetchProducts(currentSlug);
-  }, [router]);
+  }, [router, currentSlug]);
 
   return (
     <div className="py-5 flex flex-col md:flex-row items-start gap-5">

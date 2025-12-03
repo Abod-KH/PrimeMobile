@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { Logs } from 'lucide-react';
 import { ClerkLoaded, SignedIn, UserButton } from '@clerk/nextjs';
 import SignIn from './SignIn';
+import { Order } from '@/sanity.types';
 
 interface ClientHeaderContentProps {
   hasUser: boolean;
-  orders: any; // Replace 'any' with the actual type of your orders object
+  orders: Order[];
 }
 
 const ClientHeaderContent: React.FC<ClientHeaderContentProps> = ({ hasUser, orders }) => {
