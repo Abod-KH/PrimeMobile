@@ -49,7 +49,7 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
 
       setReviews(reviews.filter(review => review._id !== reviewId));
       toast.success("Review deleted successfully");
-    } catch (_error) {
+    } catch {
       toast.error("Failed to delete review");
     } finally {
       setIsDeleting(false);

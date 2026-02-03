@@ -93,7 +93,6 @@ const MobileMenu = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<BRANDS_QUERYResult>([]);
-  const [_loading, setLoading] = useState(false);
 
   // Use the global filter state
   const filters = useGlobalFilters();
@@ -101,7 +100,6 @@ const MobileMenu = () => {
   // Fetch categories and brands for mobile filters
   useEffect(() => {
     const fetchFilterData = async () => {
-      setLoading(true);
       try {
         // Fetch categories
         const categoriesQuery = `*[_type == "category"] | order(title asc) {
@@ -118,8 +116,6 @@ const MobileMenu = () => {
         setBrands(brandsData);
       } catch (error) {
         console.error("Error fetching filter data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 

@@ -53,7 +53,7 @@ const AddReview = ({ productId, user }: AddReviewProps) => {
       toast.success("Review submitted successfully!");
       setRating(0);
       setComment("");
-    } catch (_error) {
+    } catch {
       toast.error("Failed to submit review. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -77,8 +77,8 @@ const AddReview = ({ productId, user }: AddReviewProps) => {
               <StarIcon
                 size={24}
                 className={`${star <= (hoverRating || rating)
-                    ? "text-yellow-400 fill-yellow-400"
-                    : "text-gray-300"
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300"
                   } transition-colors`}
               />
             </button>
