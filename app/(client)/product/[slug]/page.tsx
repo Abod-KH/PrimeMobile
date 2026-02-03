@@ -18,6 +18,34 @@ import { FiShare2 } from "react-icons/fi";
 import { RxBorderSplit } from "react-icons/rx";
 import { TbTruckDelivery } from "react-icons/tb";
 
+import { urlFor } from "@/sanity/lib/image";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: `${product.name} | PrimeMobile`,
+      description: product.description,
+      images: product.images?.[0] ? [urlFor(product.images[0]).url()] : [],
+    },
+  };
+}
+
 type CategoryReference = {
   _ref: string;
   _type: "reference";
@@ -76,8 +104,8 @@ const SingleProductPage = async ({
                   key={index}
                   size={12}
                   className={
-                    index < Math.round(averageRating) 
-                      ? "text-shop_light_green" 
+                    index < Math.round(averageRating)
+                      ? "text-shop_light_green"
                       : "text-gray-300"
                   }
                   fill={

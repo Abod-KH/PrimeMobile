@@ -1,5 +1,11 @@
 import Container from "@/components/Container";
 import Title from "@/components/Title";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn more about PrimeMobile, our mission, our story, and why we are the best choice for your mobile and tech needs.",
+};
 
 const AboutPage = () => {
   return (

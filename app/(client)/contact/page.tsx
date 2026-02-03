@@ -1,4 +1,10 @@
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with PrimeMobile. We are here to help you with any questions about our products or your orders.",
+};
 
 const ContactPage = () => {
   return (
