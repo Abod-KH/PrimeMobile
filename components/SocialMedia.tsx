@@ -1,4 +1,4 @@
-import { Facebook, Github, Linkedin, Slack, Youtube } from "lucide-react";
+import { Facebook, Github, Youtube } from "lucide-react";
 import React from "react";
 import {
   Tooltip,
@@ -24,13 +24,13 @@ const socialLink = [
     href: "https://www.youtube.com/",
     icon: <Github className="w-5 h-5" />,
   },
-  
+
   {
     title: "Facebook",
     href: "https://www.youtube.com/",
     icon: <Facebook className="w-5 h-5" />,
   },
- 
+
 ];
 
 const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {

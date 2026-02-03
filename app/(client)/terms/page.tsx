@@ -9,17 +9,17 @@ const Terms = () => {
       <div className="py-10">
         <h3 className="text-xl font-semibold mb-3">1. Acceptance of Terms</h3>
         <p className="text-lg leading-relaxed mb-4">
-          By accessing and using Shopcart&apos;s services, you agree to be bound by these Terms and Conditions.
+          By accessing and using Shopcarts services, you agree to be bound by these Terms and Conditions.
         </p>
 
         <h3 className="text-xl font-semibold mb-3">2. Use of Services</h3>
         <p className="text-lg leading-relaxed mb-4">
-          You agree to use Shopcart&apos;s services only for lawful purposes and in accordance with these Terms and Conditions.
+          You agree to use Shopcarts services only for lawful purposes and in accordance with these Terms and Conditions.
         </p>
 
         <h3 className="text-xl font-semibold mb-3">3. Intellectual Property</h3>
         <p className="text-lg leading-relaxed mb-4">
-          All content and materials available on Shopcart&apos;s services are the property of Shopcart and are protected by applicable intellectual property laws.
+          All content and materials available on Shopcarts services are the property of Shopcart and are protected by applicable intellectual property laws.
         </p>
 
         <h3 className="text-xl font-semibold mb-3">4. Limitation of Liability</h3>

@@ -1,6 +1,6 @@
 "use client";
 import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
@@ -28,8 +28,8 @@ const Shop = ({ categories, brands }: Props) => {
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
   const [products, setProducts] = useState<Product[]>([]);
-interface Review { rating: number; }
-  const [productReviews, setProductReviews] = useState<{[key: string]: Review[]}>({});
+  interface Review { rating: number; }
+  const [productReviews, setProductReviews] = useState<{ [key: string]: Review[] }>({});
   const [loading, setLoading] = useState(false);
   // const [selectedCategory, setSelectedCategory] = useState<string | null>(
   //   categoryParams || null
@@ -44,7 +44,7 @@ interface Review { rating: number; }
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 16; // Number of products to display per page
   // const [selectedStock, setSelectedStock] = useState<string | null>(null);
-  
+
   // Desktop filter accordion states
   const [expandedDesktopCategories, setExpandedDesktopCategories] = useState(true);
   const [expandedDesktopBrands, setExpandedDesktopBrands] = useState(true);
@@ -53,9 +53,9 @@ interface Review { rating: number; }
 
   // Use global filters
   const { selectedCategory, setSelectedCategory,
-          selectedBrand, setSelectedBrand,
-          selectedPrice, setSelectedPrice,
-          selectedStock, setSelectedStock } = useGlobalFilters();
+    selectedBrand, setSelectedBrand,
+    selectedPrice, setSelectedPrice,
+    selectedStock, setSelectedStock } = useGlobalFilters();
 
   // Initialize global filters from URL params on mount
   useEffect(() => {
@@ -92,7 +92,7 @@ interface Review { rating: number; }
       price: selectedPrice,
       stock: selectedStock
     });
-    
+
     // No need for explicit sync here, useGlobalFilters handles it
   }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]); // Only run once on mount
 
@@ -154,19 +154,19 @@ interface Review { rating: number; }
     return count;
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     console.log('Shop: fetchProducts called with filters:', {
       category: selectedCategory,
       brand: selectedBrand,
       price: selectedPrice,
       stock: selectedStock
     });
-    
+
     setLoading(true);
     try {
       const minPrice = selectedPrice?.minPrice ?? 0;
       const maxPrice = selectedPrice?.maxPrice ?? 10000;
-      
+
       // Build stock filter condition
       let stockCondition = "";
       if (selectedStock === "in-stock") {
@@ -174,7 +174,7 @@ interface Review { rating: number; }
       } else if (selectedStock === "out-of-stock") {
         stockCondition = "&& stock == 0";
       }
-      
+
       const query = `
       *[_type == 'product' 
         && (!defined($selectedCategory) || references(*[_type == \"category\" && slug.current == $selectedCategory]._id))
@@ -185,20 +185,20 @@ interface Review { rating: number; }
       | order(name asc) {
         ...,\"categories\": categories[]->title, _createdAt
       }`;
-      
+
       console.log('Shop: Sanity query:', query);
       console.log('Shop: Query parameters:', { selectedCategory, selectedBrand, minPrice, maxPrice });
-      
-      const data = await client.fetch(query, 
+
+      const data = await client.fetch(query,
         { selectedCategory, selectedBrand, minPrice, maxPrice },
         { next: { revalidate: 0 } }
       );
-      
+
       console.log('Shop: Products fetched:', data.length);
       setProducts(data);
 
       // Fetch reviews for all products
-      const reviewsData: {[key: string]: Review[]} = {};
+      const reviewsData: { [key: string]: Review[] } = {};
       for (const product of data) {
         const reviewsQuery = `*[_type == \"review\" && product._ref == $productId]{rating}`;
         const reviews = await client.fetch(reviewsQuery, { productId: product._id });
@@ -210,14 +210,14 @@ interface Review { rating: number; }
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
 
   // Sort products based on selected sort option
   const sortedProducts = useMemo(() => {
     if (!products.length) return [];
-    
+
     const sortedProducts = [...products];
-    
+
     switch (sortBy) {
       case 'name-asc':
         return sortedProducts.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
@@ -239,19 +239,19 @@ interface Review { rating: number; }
         return sortedProducts.sort((a, b) => {
           const aReviews = productReviews[a._id] || [];
           const bReviews = productReviews[b._id] || [];
-          
-          const aRating = aReviews.length > 0 
-            ? aReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / aReviews.length 
+
+          const aRating = aReviews.length > 0
+            ? aReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / aReviews.length
             : 0;
-          const bRating = bReviews.length > 0 
-            ? bReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / bReviews.length 
+          const bRating = bReviews.length > 0
+            ? bReviews.reduce((sum: number, review: Review) => sum + (review.rating || 0), 0) / bReviews.length
             : 0;
-          
+
           // If ratings are equal, sort by number of reviews (more reviews = higher priority)
           if (Math.abs(aRating - bRating) < 0.01) {
             return bReviews.length - aReviews.length;
           }
-          
+
           return bRating - aRating;
         });
       default:
@@ -272,7 +272,7 @@ interface Review { rating: number; }
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice, selectedStock]);
+  }, [fetchProducts]);
 
   // Handle sorting changes
   useEffect(() => {
@@ -315,7 +315,7 @@ interface Review { rating: number; }
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
@@ -349,16 +349,16 @@ interface Review { rating: number; }
                   <span className="text-sm font-medium truncate">Sort: {getCurrentSortText()}</span>
                   <ChevronDown size={16} className={`transition-transform duration-200 flex-shrink-0 ${showSortDropdown ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {showSortDropdown && (
-                  <div 
+                  <div
                     role="listbox"
                     aria-label="Sort options"
                     className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 animate-in fade-in-0 zoom-in-95 duration-200 md:right-auto md:left-0"
                   >
                     {([
                       'name-asc',
-                      'name-desc', 
+                      'name-desc',
                       'date-old-new',
                       'date-new-old',
                       'rating-high-low'
@@ -371,9 +371,8 @@ interface Review { rating: number; }
                           setSortBy(option);
                           setShowSortDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors duration-150 flex items-center gap-2 ${
-                          sortBy === option ? 'bg-shop_dark_green/10 text-shop_dark_green font-medium' : 'text-gray-700'
-                        }`}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors duration-150 flex items-center gap-2 ${sortBy === option ? 'bg-shop_dark_green/10 text-shop_dark_green font-medium' : 'text-gray-700'
+                          }`}
                       >
                         {option === 'name-asc' && <SortAsc size={14} />}
                         {option === 'name-desc' && <SortDesc size={14} />}
@@ -385,8 +384,8 @@ interface Review { rating: number; }
                     ))}
                   </div>
                 )}
-                
-                
+
+
               </div>
 
               {/* Product Count */}
@@ -422,7 +421,7 @@ interface Review { rating: number; }
                   <ChevronRight size={20} className="text-shop_dark_green" />
                 )}
               </button>
-              
+
               {expandedDesktopCategories && (
                 <div className="animate-in slide-in-from-top-2 duration-200">
                   <CategoryList
@@ -447,7 +446,7 @@ interface Review { rating: number; }
                   <ChevronRight size={20} className="text-shop_dark_green" />
                 )}
               </button>
-              
+
               {expandedDesktopBrands && (
                 <div className="animate-in slide-in-from-top-2 duration-200">
                   <BrandList
@@ -472,7 +471,7 @@ interface Review { rating: number; }
                   <ChevronRight size={20} className="text-shop_dark_green" />
                 )}
               </button>
-              
+
               {expandedDesktopPrice && (
                 <div className="animate-in slide-in-from-top-2 duration-200">
                   <PriceList
@@ -496,7 +495,7 @@ interface Review { rating: number; }
                   <ChevronRight size={20} className="text-shop_dark_green" />
                 )}
               </button>
-              
+
               {expandedDesktopStock && (
                 <div className="animate-in slide-in-from-top-2 duration-200">
                   <div className="p-3 bg-white rounded-lg">
@@ -512,11 +511,10 @@ interface Review { rating: number; }
                         />
                         <Label
                           htmlFor="desktop-stock-in"
-                          className={`text-sm ${
-                            selectedStock === "in-stock" 
-                              ? "font-semibold text-shop_dark_green" 
+                          className={`text-sm ${selectedStock === "in-stock"
+                              ? "font-semibold text-shop_dark_green"
                               : "font-normal"
-                          }`}
+                            }`}
                         >
                           In Stock
                         </Label>
@@ -532,11 +530,10 @@ interface Review { rating: number; }
                         />
                         <Label
                           htmlFor="desktop-stock-out"
-                          className={`text-sm ${
-                            selectedStock === "out-of-stock" 
-                              ? "font-semibold text-shop_dark_green" 
+                          className={`text-sm ${selectedStock === "out-of-stock"
+                              ? "font-semibold text-shop_dark_green"
                               : "font-normal"
-                          }`}
+                            }`}
                         >
                           Out of Stock
                         </Label>
@@ -555,7 +552,7 @@ interface Review { rating: number; }
               )}
             </div>
           </div>
-          
+
           {/* Mobile Filters Info */}
           <div className="md:hidden mb-4 p-3 bg-shop_dark_green/10 rounded-lg border border-shop_dark_green/20 transition-all duration-200 hover:bg-shop_dark_green/15">
             <div className="flex items-center justify-between mb-3">
@@ -577,7 +574,7 @@ interface Review { rating: number; }
                 </button>
               )}
             </div>
-            
+
             {/* Active Filter Chips */}
             {hasActiveFilters && (
               <div className="flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200">
@@ -604,7 +601,7 @@ interface Review { rating: number; }
                 ))}
               </div>
             )}
-            
+
             {/* Filter Status */}
             <div className="mt-3 text-xs text-shop_dark_green/70">
               {hasActiveFilters ? (
@@ -614,7 +611,7 @@ interface Review { rating: number; }
               )}
             </div>
           </div>
-          
+
           <div className="flex-1 pt-5">
             {/* Sorting Status */}
             <div className="mb-4 text-sm text-gray-600 flex items-center gap-2 flex-wrap">
@@ -633,7 +630,7 @@ interface Review { rating: number; }
                 </div>
               )}
             </div>
-            
+
             <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
               {loading ? (
                 <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white">
@@ -645,9 +642,9 @@ interface Review { rating: number; }
               ) : currentProducts?.length > 0 ? (
                 <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 transition-all duration-150 ${isSorting ? 'opacity-75 scale-95' : 'opacity-100 scale-100'}`}>
                   {currentProducts?.map((product) => (
-                    <ProductCard 
-                      key={product?._id} 
-                      product={product} 
+                    <ProductCard
+                      key={product?._id}
+                      product={product}
                       reviews={productReviews[product._id] || []}
                     />
                   ))}

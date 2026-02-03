@@ -45,14 +45,13 @@ export async function createCheckoutSession(
       invoice_creation: {
         enabled: true,
       },
-      success_url: `${
-        process.env.NEXT_PUBLIC_BASE_URL
-      }/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL
+        }/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
       line_items: items?.map((item) => ({
         price_data: {
           currency: "USD",
-          unit_amount: Math.round(item?.product?.price! * 100),
+          unit_amount: Math.round((item?.product?.price ?? 0) * 100),
           product_data: {
             name: item?.product?.name || "Unknown Product",
             description: item?.product?.description,

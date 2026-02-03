@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 
 declare global {
   interface Window {
-    google: { translate: { TranslateElement: { new (config: object, elementId: string): any; InlineLayout: { SIMPLE: any; }; }; }; };
+    google: { translate: { TranslateElement: { new(config: object, elementId: string): unknown; InlineLayout: { SIMPLE: unknown; }; }; }; };
     googleTranslateElementInit: () => void;
   }
 }

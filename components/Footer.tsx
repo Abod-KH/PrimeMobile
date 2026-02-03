@@ -5,8 +5,6 @@ import SocialMedia from "./SocialMedia";
 import { SubText, SubTitle } from "./ui/text";
 import { categoriesData, quickLinksData } from "@/constants/data";
 import Link from "next/link";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import GoogleTranslate from "./GoogleTranslate";
 
@@ -59,14 +57,14 @@ const Footer = () => {
           </div>
           <div className="space-y-6">
             <SubTitle className="text-shop_dark_green">Get In Touch</SubTitle>
-            
+
             <ul className="space-y-4">
               <li className="text-white flex items-center gap-3 group">
                 <span className="p-1.5 bg-shop_dark_green rounded-full group-hover:bg-green-500/20 transition-colors">
                   <MapPin className="h-4 w-4 text-white" />
                 </span>
                 <div>
-                  
+
                   <span className="text-sm">Amman, Jordan</span>
                 </div>
               </li>
@@ -75,7 +73,7 @@ const Footer = () => {
                   <Phone className="h-4 w-4 text-white" />
                 </span>
                 <div>
-                  
+
                   <span className="text-sm">+962-79999999</span>
                 </div>
               </li>
@@ -84,7 +82,7 @@ const Footer = () => {
                   <Mail className="h-4 w-4 text-white" />
                 </span>
                 <div>
-                 
+
                   <span className="text-sm">info@primemobile.com</span>
                 </div>
               </li>
@@ -93,7 +91,7 @@ const Footer = () => {
                   <Clock className="h-4 w-4 text-white" />
                 </span>
                 <div>
-                  
+
                   <span className="text-sm">Mon - Sat: 10:00 AM - 7:00 PM</span>
                 </div>
               </li>

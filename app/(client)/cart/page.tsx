@@ -27,7 +27,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { ShoppingBag, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Address } from "@/sanity.types";
 
@@ -46,36 +46,39 @@ const CartPage = () => {
   const [addresses, setAddresses] = useState<Address[] | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     if (!user?.id) return;
-    
+
     try {
       const query = `*[_type=="address" && userId==$userId] | order(createdAt desc)`;
       const data = await client.fetch<Address[]>(query, { userId: user.id });
       setAddresses(data);
-      
+
       // Only set selected address if none is currently selected or if current selection is not in new data
-      if (!selectedAddress || !data.find(addr => addr._id === selectedAddress._id)) {
-        const defaultAddress = data.find((addr: Address) => addr.default);
-        if (defaultAddress) {
-          setSelectedAddress(defaultAddress);
-        } else if (data.length > 0) {
-          setSelectedAddress(data[0]);
-        } else {
-          setSelectedAddress(null);
+      setSelectedAddress((currentSelected) => {
+        if (!currentSelected || !data.find(addr => addr._id === currentSelected._id)) {
+          const defaultAddress = data.find((addr: Address) => addr.default);
+          if (defaultAddress) {
+            return defaultAddress;
+          } else if (data.length > 0) {
+            return data[0];
+          } else {
+            return null;
+          }
         }
-      }
+        return currentSelected;
+      });
     } catch (error) {
       console.error("Addresses fetching error:", error);
       toast.error("Failed to load addresses");
     }
-  };
+  }, [user?.id]);
 
   useEffect(() => {
     if (user?.id) {
       fetchAddresses();
     }
-  }, [user?.id]);
+  }, [user?.id, fetchAddresses]);
 
   const handleResetCart = () => {
     const confirmed = window.confirm(
@@ -254,7 +257,7 @@ const CartPage = () => {
                           </Button>
                         </div>
                       </div>
-                      
+
                       <DeliveryAddress
                         addresses={addresses}
                         selectedAddress={selectedAddress}

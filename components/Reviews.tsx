@@ -49,7 +49,7 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
 
       setReviews(reviews.filter(review => review._id !== reviewId));
       toast.success("Review deleted successfully");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to delete review");
     } finally {
       setIsDeleting(false);
@@ -59,7 +59,7 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
   return (
     <div className="mt-10 border-t border-gray-200 pt-10">
       <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
-      
+
       {isSignedIn ? (
         hasUserReviewed ? (
           <p className="text-gray-600 mb-6">You have already reviewed this product.</p>
@@ -92,7 +92,7 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
                 )}
               </div>
             </div>
-            
+
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
                 <div>
@@ -112,7 +112,7 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
                   </button>
                 )}
               </div>
-              
+
               <div className="flex items-center mb-2">
                 {[...Array(5)].map((_, index) => (
                   <StarIcon
@@ -122,12 +122,12 @@ const Reviews = ({ productId, reviews: initialReviews }: ReviewsProps) => {
                   />
                 ))}
               </div>
-              
+
               <p className="text-gray-600 text-sm">{review.comment}</p>
             </div>
           </div>
         ))}
-        
+
         {(!reviews || reviews.length === 0) && (
           <p className="text-gray-500 text-center py-4">
             No reviews yet. Be the first to review this product!
